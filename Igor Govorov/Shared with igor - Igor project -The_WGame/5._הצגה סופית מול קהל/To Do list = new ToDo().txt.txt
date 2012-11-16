@@ -1,0 +1,12 @@
+
+
+Igor
+====
+1) Don't forget to remove accounts from the-w-game!
+2) Don't forget to remove facebook account
+3) Fully refresh the-w-game to force on-bind()
+
+Michael
+=======
+1) Delete from Gmail previouse w-game invetations (and unapropriate emails)
+2) Fully refresh the-w-game to force on-bind()
