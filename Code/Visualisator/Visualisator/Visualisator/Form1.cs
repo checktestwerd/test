@@ -85,13 +85,13 @@ namespace Visualisator
 
         private void btnImage_MouseDown(object sender, MouseEventArgs e)
         {
-            textBox1.Text = "X = " + e.X + "    Y = " + e.Y + "\r\n" + textBox1.Text;
+            txtConsole.Text = "X = " + e.X + "    Y = " + e.Y + "\r\n" + txtConsole.Text;
             int _rad_size = 12;
             for(int i = 0; i< VERT_SIZE;i++)
             {
                 if (_vert[i].x >= e.X - _rad_size && _vert[i].x <= e.X + _rad_size && _vert[i].y >= e.Y - _rad_size && _vert[i].y <= e.Y + _rad_size)
                 {
-                    textBox1.Text = "Vertex :" + i.ToString() + "\r\n" + textBox1.Text;
+                    txtConsole.Text = "AP selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
                     SelectedVertex = i;
                     SelectedX = e.X;
                     SelectedY = e.Y;
@@ -106,7 +106,7 @@ namespace Visualisator
             {
                 if (_sta[i].x >= e.X - _rad_size && _sta[i].x <= e.X + _rad_size && _sta[i].y >= e.Y - _rad_size && _sta[i].y <= e.Y + _rad_size)
                 {
-                    textBox1.Text = "Vertex :" + i.ToString() + "\r\n" + textBox1.Text;
+                    txtConsole.Text = "Station selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
                     SelectedVertex = i;
                     SelectedX = e.X;
                     SelectedY = e.Y;
@@ -119,18 +119,34 @@ namespace Visualisator
 
         private void btnImage_MouseUp(object sender, MouseEventArgs e)
         {
-            textBox1.Text = "X = " + e.X + "    Y = " + e.Y + "\r\n" + textBox1.Text;
+            txtConsole.Text = "X = " + e.X + "    Y = " + e.Y + "\r\n" + txtConsole.Text;
 
-            if (SelectedVertex >=0 && SelectedX != e.X && SelectedY != e.Y && _ob == SelectedObjectType.AP)
+            if(SelectedVertex <0)
             {
-                _vert[SelectedVertex].x = e.X;
-                _vert[SelectedVertex].y = e.Y;
+                ConsolePrint("No object selected for move");
+                return;
             }
-            if (SelectedVertex >= 0 && SelectedX != e.X && SelectedY != e.Y && _ob == SelectedObjectType.STA)
+
+            if (SelectedX != e.X && SelectedY != e.Y)
             {
-                _sta[SelectedVertex].x = e.X;
-                _sta[SelectedVertex].y = e.Y;
+                ConsolePrint("Start move object");
+                if (_ob == SelectedObjectType.AP)
+                {
+                    _vert[SelectedVertex].x = e.X;
+                    _vert[SelectedVertex].y = e.Y;
+                }
+                if ( _ob == SelectedObjectType.STA)
+                {
+                    ConsolePrint("Drawing " + _sta[SelectedVertex].Address.getMAC());
+                    _sta[SelectedVertex].x = e.X;
+                    _sta[SelectedVertex].y = e.Y;
+                }        
             }
+            else
+            {
+                ConsolePrint("Object not moved: Simple click");
+            }
+
             SelectedVertex = -1;
           /*  for (int i = 0; i < VERT_SIZE; i++)
             {
@@ -155,19 +171,43 @@ namespace Visualisator
             }
         }
 
+        private void ConsolePrint(String data)
+        {
+            txtConsole.Text = data + "\r\n" + txtConsole.Text;
+        }
         private void pictureBox_DragDrop(object sender, DragEventArgs e)
         {
-            PictureBox picbox = (PictureBox)sender;
-            Graphics g = picbox.CreateGraphics();
-            g.DrawImage((Image)e.Data.GetData(DataFormats.Bitmap), new Point(0, 0));
+            ConsolePrint("Start pictureBox_DragDrop");
+            try
+            {
+                PictureBox picbox = (PictureBox)sender;
+                Graphics g = picbox.CreateGraphics();
+                g.DrawImage((Image)e.Data.GetData(DataFormats.Bitmap), new Point(0, 0));
+                ConsolePrint("pictureBox_DragDrop success");
+            }
+            catch (Exception)
+            {
+                ConsolePrint("pictureBox_DragDrop error");
+                throw;
+            }
+
         }
 
 
         private void button1_Click(object sender, EventArgs e)
         {
- 
-             //   
-            refr();
+            ConsolePrint("Start drawing");
+            try
+            {
+                refr();
+                ConsolePrint("Drawing success");
+            }
+            catch (Exception)
+            {
+                ConsolePrint("Drawing error");
+                throw;
+            }  
+            
         }
         
         public void refr()
@@ -184,6 +224,11 @@ namespace Visualisator
             }
             gr.DrawPie(new Pen(Color.Yellow), 500 / 2, 500 / 2, 1, 1, 1, 360);
             piB.Image = bm;
+        }
+
+        private void btn_AddAP_Click(object sender, EventArgs e)
+        {
+
         }
 
        

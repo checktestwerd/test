@@ -8,12 +8,18 @@ namespace Visualisator
 {
     class STA:Vertex 
     {
+        private MAC _address = new MAC();
         public STA()
         {
             this.VColor = Color.RoyalBlue;
+            
         }
 
 
-
+        public MAC Address
+        {
+            get { return _address; }
+            set { _address = value; }
+        }
     }
 }
