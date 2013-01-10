@@ -63,6 +63,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RFDevice_Settings.cs" />
+    <Compile Include="SimulationContainer.cs" />
     <Compile Include="STA.cs" />
     <Compile Include="StationInfo.cs">
       <SubType>Form</SubType>

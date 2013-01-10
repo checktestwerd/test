@@ -67,33 +67,26 @@ namespace Visualisator
             bm = new Bitmap(piB.Width, piB.Height);
            
             gr = Graphics.FromImage(bm);
-           
-            
-            /*
-         
-            _vert = new AP[VERT_SIZE];
-            _sta = new STA[STA_SIZE];
+        }
+
+
+        private void CreateRandomSimulation()
+        {
+            ClearObjects();
             Random rand = new Random();
             for (int i = 0; i < VERT_SIZE; i++)
             {
-                _vert[i] = new AP(_MEDIUM);
-                _vert[i].SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
-                _objects.Add(_vert[i]);
+                AP _ap = new AP(_MEDIUM);
+                _ap.SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
+                _objects.Add(_ap);
             }
             for (int i = 0; i < STA_SIZE; i++)
             {
-                _sta[i] = new STA(_MEDIUM);
-                _sta[i].SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
-                _objects.Add(_sta[i]);
+                STA _sta = new STA(_MEDIUM);
+                _sta.SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
+                _objects.Add(_sta);
             }
-            */
-
-
-            
-
-
         }
-
 
         private void BoardDblClick(object sender, MouseEventArgs e)
         {
@@ -176,36 +169,6 @@ namespace Visualisator
 
                 }
             }
-            /*
-            for(int i = 0; i< VERT_SIZE;i++)
-            {
-                if (_vert[i].x >= e.X - _rad_size && _vert[i].x <= e.X + _rad_size && _vert[i].y >= e.Y - _rad_size && _vert[i].y <= e.Y + _rad_size)
-                {
-                    txtConsole.Text = "AP selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
-                    SelectedVertex = i;
-                    SelectedX = e.X;
-                    SelectedY = e.Y;
-                    SelectedZ = e.X + e.Y;
-                    _ob = SelectedObjectType.AP;
-                    return;
-                }
-            }
-
-
-            for (int i = 0; i < STA_SIZE; i++)
-            {
-                if (_sta[i].x >= e.X - _rad_size && _sta[i].x <= e.X + _rad_size && _sta[i].y >= e.Y - _rad_size && _sta[i].y <= e.Y + _rad_size)
-                {
-                    txtConsole.Text = "Station selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
-                    SelectedVertex = i;
-                    SelectedX = e.X;
-                    SelectedY = e.Y;
-                    SelectedZ = e.X + e.Y;
-                    _ob = SelectedObjectType.STA;
-                    return;
-                }
-            }
-             */
         }
 
         private void btnImage_MouseUp(object sender, MouseEventArgs e)
@@ -247,15 +210,7 @@ namespace Visualisator
             }
 
             SelectedVertex = -1;
-          /*  for (int i = 0; i < VERT_SIZE; i++)
-            {
-                if (_vert[i].x >= e.X - 10 && _vert[i].x <= e.X + 10 && _vert[i].y >= e.Y - 10 && _vert[i].y <= e.Y + 10)
-                {
-                    textBox1.Text = "- l Vertex :" + i.ToString() + "\r\n" + textBox1.Text;
-                }
-            }
-           * 
-           * */
+
             refr();
         }
         private void pictureBox_DragEnter(object sender, DragEventArgs e)
@@ -293,8 +248,9 @@ namespace Visualisator
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void DrowOnBoard()
         {
+
             ConsolePrint("Start drawing");
             try
             {
@@ -305,8 +261,11 @@ namespace Visualisator
             {
                 ConsolePrint("Drawing error");
                 throw;
-            }  
-            
+            }
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DrowOnBoard();
         }
         
         public void refr()
@@ -366,9 +325,10 @@ namespace Visualisator
         private void button2_Click(object sender, EventArgs e)
         {
             var serializer = new BinaryFormatter();
+            SimulationContainer _container = new SimulationContainer(_objects, _MEDIUM);
             using (var stream = File.OpenWrite("test.dat"))
             {
-                serializer.Serialize(stream, _objects);
+                serializer.Serialize(stream, _container);
             }
         }
 
@@ -381,23 +341,22 @@ namespace Visualisator
 
                 if (dr == System.Windows.Forms.DialogResult.OK)
                 {
-                    for (int i = 0; i < _objects.Count; i++)
-                    {
-                        _objects[i] = null;
-
-                    }
-                    _objects.Clear();
+                    ClearObjects();
                     
                     foreach (String file in openDLGOpenSimulationSettings.FileNames)
                     {
                         try
                         {
                             var serializer = new BinaryFormatter();
+                            SimulationContainer _container = new SimulationContainer(null, null);
                            // SoapFormatter formatter = new SoapFormatter();
                             using (var stream = File.OpenRead(file))
                             {
                                 //System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-                                _objects = (ArrayList)  serializer.Deserialize(stream);
+                                _container = (SimulationContainer)serializer.Deserialize(stream);
+                                _objects = _container.Objects;
+                                _MEDIUM = _container.MEDIUM;
+                                _MEDIUM.Enable();
                             }
                             //listBox4.Items.Add(file); TODO
                             //ReadParseCreateObjects(file);
@@ -423,7 +382,23 @@ namespace Visualisator
             {
                 //AddToErrorLog(ex.Message);
             }
-            refr();
+            DrowOnBoard();
+        }
+
+        private void ClearObjects()
+        {
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                _objects[i] = null;
+
+            }
+            _objects.Clear();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            CreateRandomSimulation();
+            DrowOnBoard();
         }
 
        

@@ -32,10 +32,13 @@ namespace Visualisator
         }
         public Medium()
         {
+            Enable();
+        }
+
+        public void Enable(){
             Thread newThread = new Thread(new ThreadStart(Run));
             newThread.Start();
         }
-
         public void Run() 
         {
             while (_MEDIUM_WORK)
