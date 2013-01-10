@@ -34,6 +34,9 @@
             this.btn_AddSTA = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btnStopMedium = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.openDLGOpenSimulationSettings = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // button1
@@ -97,11 +100,37 @@
             this.btnStopMedium.UseVisualStyleBackColor = true;
             this.btnStopMedium.Click += new System.EventHandler(this.btnStopMedium_Click);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(628, 21);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(77, 28);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "Save";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(723, 20);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(80, 28);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Load";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // openDLGOpenSimulationSettings
+            // 
+            this.openDLGOpenSimulationSettings.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(853, 513);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.btnStopMedium);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_AddSTA);
@@ -126,6 +155,9 @@
         private System.Windows.Forms.Button btn_AddSTA;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnStopMedium;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.OpenFileDialog openDLGOpenSimulationSettings;
     }
 }
 

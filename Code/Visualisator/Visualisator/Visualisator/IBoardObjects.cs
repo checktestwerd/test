@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Visualisator.Packets
+namespace Visualisator
 {
-    interface Packet
+    interface IBoardObjects
     {
 
     }

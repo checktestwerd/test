@@ -6,7 +6,8 @@ using System.Drawing;
 
 namespace Visualisator
 {
-    class Vertex
+    [Serializable()]
+    class Vertex: ISerializable
     {
         private Double _x;
         private Double _y;

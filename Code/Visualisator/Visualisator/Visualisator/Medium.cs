@@ -7,7 +7,8 @@ using System.Collections;
 
 namespace Visualisator
 {
-    class Medium
+    [Serializable()]
+    class Medium :ISerializable
     {
 
         private Boolean _MEDIUM_WORK = true;
@@ -50,7 +51,7 @@ namespace Visualisator
 
         }
 
-        public void SendData(Packets.Packet pack)
+        public void SendData(Packets.IPacket pack)
         {
             MediumClean = false;
 
@@ -69,9 +70,9 @@ namespace Visualisator
             MediumClean = true;
 
         }
-        public Packets.Packet ReceiveData()
+        public Packets.IPacket ReceiveData()
         {
-            Packets.Packet ret = null;
+            Packets.IPacket ret = null;
             ArrayList temp = new ArrayList(_packets);
             if (temp.Count > 0)
             {
@@ -79,7 +80,7 @@ namespace Visualisator
                 {
                     if (pack != null && typeof(Packets.Beacon) == pack.GetType())
                     {
-                        ret = (Packets.Packet)pack;
+                        ret = (Packets.IPacket)pack;
                         return (ret);
                     }
                     // loop body

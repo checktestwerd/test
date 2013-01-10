@@ -8,7 +8,8 @@ using System.Collections;
 
 namespace Visualisator
 {
-    class STA : Vertex, BoardObjects
+    [Serializable()]
+    class STA : Vertex, IBoardObjects,IRFDevice,ISerializable
     {
         private MAC _address = new MAC();
         private Medium _MEDIUM = null;
@@ -19,12 +20,21 @@ namespace Visualisator
         {
             this._MEDIUM = med;
             this.VColor = Color.RoyalBlue;
-            Thread newThread = new Thread(new ThreadStart(Listen));
-            newThread.Start();
             _address = new MAC();
+            Enable();
         }
 
+        ~STA()
+        {
+            Console.WriteLine("[" + _address.getMAC() + "]" + " Destroyed");
+        }
 
+        public void Enable()
+        {
+            Thread newThread = new Thread(new ThreadStart(Listen));
+            newThread.Start();
+
+        }
         public MAC Address
         {
             get { return _address; }
@@ -39,7 +49,7 @@ namespace Visualisator
                 if (!_MEDIUM.MediumClean)
                 {
 
-                    Packets.Packet pack = _MEDIUM.ReceiveData();
+                    Packets.IPacket pack = _MEDIUM.ReceiveData();
                     if(pack != null ){
 
                         if (pack.GetType() == typeof(Packets.Beacon)){
@@ -61,5 +71,15 @@ namespace Visualisator
             return (_AccessPoint);
         }
 
+
+        public void SendData(Packets.IPacket PacketToSend)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Packets.IPacket ReceiveData(IRFDevice ThisDevice)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

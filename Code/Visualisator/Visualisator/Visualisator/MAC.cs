@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Visualisator
 {
-    class MAC
+    [Serializable()]
+    class MAC:ISerializable
     {
         private String _MAC;
         private static Random rand = new Random(123);

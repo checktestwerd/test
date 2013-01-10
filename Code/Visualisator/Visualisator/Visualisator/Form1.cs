@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Visualisator
 {
@@ -15,10 +18,10 @@ namespace Visualisator
         PictureBox piB;
         Bitmap bm;
         Graphics gr;
-        private AP[] _vert ;
-        private STA[] _sta;
-        private Int32 STA_SIZE = 7;
-        private Int32 VERT_SIZE = 5;
+       // private AP[] _vert ;
+       //S private STA[] _sta;
+        private Int32 STA_SIZE = 3;
+        private Int32 VERT_SIZE = 2;
 
         private Int32 SelectedVertex = -1;
         private float SelectedX = 0;
@@ -66,6 +69,7 @@ namespace Visualisator
             gr = Graphics.FromImage(bm);
            
             
+            /*
          
             _vert = new AP[VERT_SIZE];
             _sta = new STA[STA_SIZE];
@@ -82,7 +86,7 @@ namespace Visualisator
                 _sta[i].SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
                 _objects.Add(_sta[i]);
             }
-
+            */
 
 
             
@@ -308,15 +312,32 @@ namespace Visualisator
         public void refr()
         {
             gr.Clear(Color.Black);
+
+
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                if (_objects[i].GetType() == typeof(STA))
+                {
+                    STA _tsta = (STA)_objects[i];
+
+                    gr.DrawPie(new Pen(_tsta.VColor), (float)_tsta.x, (float)_tsta.y, 12, 10, 1, 360);
+            
+                }
+                else if (_objects[i].GetType() == typeof(AP))
+                {
+                    AP _tap = (AP)_objects[i];
+                    Rectangle myRectangle = new Rectangle((int)_tap.x, (int)_tap.y, 10, 10);
+                    gr.DrawRectangle(new Pen(_tap.VColor), myRectangle);
+            
+                }
+            }
+            
             for (int i = 0; i < VERT_SIZE; i++)
             {
-                Rectangle myRectangle = new Rectangle((int)_vert[i].x, (int)_vert[i].y, 10, 10);
-                gr.DrawRectangle(new Pen(_vert[i].VColor), myRectangle);
             }
 
             for (int i = 0; i < STA_SIZE; i++)
             {
-                gr.DrawPie(new Pen(_sta[i].VColor), (float)_sta[i].x, (float)_sta[i].y, 12, 10, 1, 360);
             }
             gr.DrawPie(new Pen(Color.Yellow), 500 / 2, 500 / 2, 1, 1, 1, 360);
             piB.Image = bm;
@@ -340,6 +361,69 @@ namespace Visualisator
         private void btnStopMedium_Click(object sender, EventArgs e)
         {
             _MEDIUM.StopMedium = false;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var serializer = new BinaryFormatter();
+            using (var stream = File.OpenWrite("test.dat"))
+            {
+                serializer.Serialize(stream, _objects);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+           
+            try
+            {
+                DialogResult dr = this.openDLGOpenSimulationSettings.ShowDialog();
+
+                if (dr == System.Windows.Forms.DialogResult.OK)
+                {
+                    for (int i = 0; i < _objects.Count; i++)
+                    {
+                        _objects[i] = null;
+
+                    }
+                    _objects.Clear();
+                    
+                    foreach (String file in openDLGOpenSimulationSettings.FileNames)
+                    {
+                        try
+                        {
+                            var serializer = new BinaryFormatter();
+                           // SoapFormatter formatter = new SoapFormatter();
+                            using (var stream = File.OpenRead(file))
+                            {
+                                //System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+                                _objects = (ArrayList)  serializer.Deserialize(stream);
+                            }
+                            //listBox4.Items.Add(file); TODO
+                            //ReadParseCreateObjects(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+
+                    for (int i = 0; i < _objects.Count; i++)
+                    {
+                        IRFDevice _dev = (IRFDevice)_objects[i];
+                        _dev.Enable();
+
+                    }
+                //    _settings.setValue("filesFolderPath", Path.GetDirectoryName(openFileDialog2.FileName.ToString()).ToString());
+                  //  LoadFilesFromArr(openFileDialog2.FileNames);
+                   // openFileDialog2.InitialDirectory = _settings.getValue("filesFolderPath");
+                }
+            }
+            catch (Exception ex)
+            {
+                //AddToErrorLog(ex.Message);
+            }
+            refr();
         }
 
        

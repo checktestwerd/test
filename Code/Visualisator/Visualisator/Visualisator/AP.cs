@@ -7,7 +7,8 @@ using System.Threading;
 
 namespace Visualisator
 {
-    class AP : Vertex, BoardObjects
+    [Serializable()]
+    class AP :  Vertex, IBoardObjects,IRFDevice,ISerializable
     {
         private Medium _MEDIUM = null;
         private MAC _address = new MAC();
@@ -19,10 +20,16 @@ namespace Visualisator
             this.VColor = Color.YellowGreen;
             
             _BeaconPeriod = rnadomBeacon.Next(100, 500);
-            Thread newThread = new Thread(new ThreadStart(SendBeacon));
-            newThread.Start();
+     
+            Enable();
         }
 
+        public void Enable()
+        {
+            Thread newThread = new Thread(new ThreadStart(SendBeacon));
+            newThread.Start();
+
+        }
         public MAC Address
         {
             get { return _address; }
@@ -44,13 +51,23 @@ namespace Visualisator
         }
 
 
-        private void SendPacket(Packets.Packet pack)
+        private void SendPacket(Packets.IPacket pack)
         {
             if (_MEDIUM.MediumClean)
             {
 
                 _MEDIUM.SendData(pack);
             }
+        }
+
+        public void SendData(Packets.IPacket PacketToSend)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Packets.IPacket ReceiveData(IRFDevice ThisDevice)
+        {
+            throw new NotImplementedException();
         }
     }
 }
