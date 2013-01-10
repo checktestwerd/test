@@ -14,6 +14,8 @@ namespace Visualisator
         private MAC _address = new MAC();
         private Int32 _BeaconPeriod = 500;
         private static Random rnadomBeacon = new Random();
+
+        private Boolean _Enabled = true;
         public AP(Medium med)
         {
             this._MEDIUM = med;
@@ -23,11 +25,21 @@ namespace Visualisator
      
             Enable();
         }
-
+        ~AP()
+        {
+            _Enabled = false;
+        }
         public void Enable()
         {
+            _Enabled = true;
             Thread newThread = new Thread(new ThreadStart(SendBeacon));
             newThread.Start();
+
+        }
+
+        public void Disable()
+        {
+            _Enabled = false;
 
         }
         public MAC Address
@@ -37,7 +49,7 @@ namespace Visualisator
         }
         public void SendBeacon()
         {
-            while (true)
+            while (_Enabled)
             {
                 Packets.Beacon _beac = new Packets.Beacon();
                 Console.WriteLine("[" + _address.getMAC() + "]" + " send beacon. each " + _BeaconPeriod + " ms.");

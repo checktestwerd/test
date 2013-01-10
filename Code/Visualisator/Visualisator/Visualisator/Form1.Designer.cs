@@ -99,7 +99,7 @@
             this.btnStopMedium.TabIndex = 5;
             this.btnStopMedium.Text = "Stop Med";
             this.btnStopMedium.UseVisualStyleBackColor = true;
-            this.btnStopMedium.Click += new System.EventHandler(this.btnStopMedium_Click);
+            this.btnStopMedium.Click += new System.EventHandler(this.BtnStopMediumClick);
             // 
             // button2
             // 
@@ -151,6 +151,7 @@
             this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Leave += new System.EventHandler(this.Form1_Leave);

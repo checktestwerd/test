@@ -11,41 +11,48 @@ namespace Visualisator
     class Medium :ISerializable
     {
 
-        private Boolean _MEDIUM_WORK = true;
+        private Boolean _mediumWork = true;
 
 
         private ArrayList _packets = new ArrayList();
 
-        private Boolean _MediumClean = true;
+        private Boolean _mediumClean = true;
 
         public Boolean MediumClean
         {
-            get { return _MediumClean; }
-            set { _MediumClean = value; }
+            get { return _mediumClean; }
+            set { _mediumClean = value; }
         }
 
 
         public Boolean StopMedium
         {
-            get { return _MEDIUM_WORK; }
-            set { _MEDIUM_WORK = value; }
+            get { return _mediumWork; }
+            set { _mediumWork = value; }
         }
         public Medium()
         {
             Enable();
         }
 
-        public void Enable(){
+        public void Enable()
+        {
+            _mediumWork = true;
             Thread newThread = new Thread(new ThreadStart(Run));
             newThread.Start();
         }
+        public void Disable()
+        {
+            _mediumWork = false;
+        }
+
         public void Run() 
         {
-            while (_MEDIUM_WORK)
+            while (_mediumWork)
             {
 
-                Console.WriteLine("Running in a different thread.");
-                Thread.Sleep(15000);
+                //Console.WriteLine("Running in a different thread.");
+                Thread.Sleep(3000);
             }
         }
 

@@ -13,7 +13,7 @@ namespace Visualisator
     {
         private MAC _address = new MAC();
         private Medium _MEDIUM = null;
-
+        private Boolean _Enabled = true;
         private ArrayList _AccessPoint = new ArrayList();
 
         public STA(Medium med)
@@ -26,11 +26,13 @@ namespace Visualisator
 
         ~STA()
         {
+            _Enabled = false;
             Console.WriteLine("[" + _address.getMAC() + "]" + " Destroyed");
         }
 
         public void Enable()
         {
+            _Enabled = true;
             Thread newThread = new Thread(new ThreadStart(Listen));
             newThread.Start();
 
@@ -40,11 +42,15 @@ namespace Visualisator
             get { return _address; }
             set { _address = value; }
         }
+        public void Disable()
+        {
+            _Enabled = false;
 
+        }
 
         public void Listen()
         {
-            while (true)
+            while (_Enabled)
             {
                 if (!_MEDIUM.MediumClean)
                 {
@@ -58,7 +64,7 @@ namespace Visualisator
                                 _AccessPoint.Add(bec.SSID);
                         }
                         else{
-                            // Console.WriteLine("[" + _address.getMAC() + "]" + " listening.");
+                             Console.WriteLine("[" + _address.getMAC() + "]" + " listening.");
                         }
                     }
                 }

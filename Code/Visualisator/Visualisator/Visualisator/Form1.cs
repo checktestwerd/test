@@ -317,7 +317,7 @@ namespace Visualisator
             _MEDIUM.StopMedium = true;
         }
 
-        private void btnStopMedium_Click(object sender, EventArgs e)
+        private void BtnStopMediumClick(object sender, EventArgs e)
         {
             _MEDIUM.StopMedium = false;
         }
@@ -349,17 +349,14 @@ namespace Visualisator
                         {
                             var serializer = new BinaryFormatter();
                             SimulationContainer _container = new SimulationContainer(null, null);
-                           // SoapFormatter formatter = new SoapFormatter();
+
                             using (var stream = File.OpenRead(file))
                             {
-                                //System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
                                 _container = (SimulationContainer)serializer.Deserialize(stream);
                                 _objects = _container.Objects;
                                 _MEDIUM = _container.MEDIUM;
                                 _MEDIUM.Enable();
                             }
-                            //listBox4.Items.Add(file); TODO
-                            //ReadParseCreateObjects(file);
                         }
                         catch (Exception ex)
                         {
@@ -373,9 +370,6 @@ namespace Visualisator
                         _dev.Enable();
 
                     }
-                //    _settings.setValue("filesFolderPath", Path.GetDirectoryName(openFileDialog2.FileName.ToString()).ToString());
-                  //  LoadFilesFromArr(openFileDialog2.FileNames);
-                   // openFileDialog2.InitialDirectory = _settings.getValue("filesFolderPath");
                 }
             }
             catch (Exception ex)
@@ -389,9 +383,12 @@ namespace Visualisator
         {
             for (int i = 0; i < _objects.Count; i++)
             {
-                _objects[i] = null;
+                IRFDevice _dev = (IRFDevice) _objects[i];
+                _dev.Disable();
+                _dev = null;
 
             }
+            _MEDIUM.Disable();
             _objects.Clear();
         }
 
@@ -399,6 +396,11 @@ namespace Visualisator
         {
             CreateRandomSimulation();
             DrowOnBoard();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ClearObjects();
         }
 
        

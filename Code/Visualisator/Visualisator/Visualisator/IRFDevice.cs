@@ -10,5 +10,6 @@ namespace Visualisator
         void Enable();
         void SendData(IPacket PacketToSend);
         IPacket ReceiveData(IRFDevice ThisDevice);
+        void Disable();
     }
 }
