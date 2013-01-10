@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace Visualisator
 {
@@ -23,6 +24,10 @@ namespace Visualisator
         private float SelectedX = 0;
         private float SelectedY = 0;
         private float SelectedZ = 0;
+
+        private ArrayList _objects = new ArrayList();
+
+        private Medium _MEDIUM = new Medium();
 
         private enum SelectedObjectType
         {
@@ -53,7 +58,7 @@ namespace Visualisator
             this.piB.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnImage_MouseUp);
             this.piB.DragDrop += new System.Windows.Forms.DragEventHandler(this.pictureBox_DragDrop);
             this.piB.DragEnter += new System.Windows.Forms.DragEventHandler(this.pictureBox_DragEnter);
-            
+            this.piB.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BoardDblClick);
           
             
             bm = new Bitmap(piB.Width, piB.Height);
@@ -67,26 +72,107 @@ namespace Visualisator
             Random rand = new Random();
             for (int i = 0; i < VERT_SIZE; i++)
             {
-                _vert[i] = new AP();
+                _vert[i] = new AP(_MEDIUM);
                 _vert[i].SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
+                _objects.Add(_vert[i]);
             }
             for (int i = 0; i < STA_SIZE; i++)
             {
-                _sta[i] = new STA();
+                _sta[i] = new STA(_MEDIUM);
                 _sta[i].SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
+                _objects.Add(_sta[i]);
             }
-       
 
 
 
+            
 
 
         }
 
+
+        private void BoardDblClick(object sender, MouseEventArgs e)
+        {
+            txtConsole.Text = "X = " + e.X + "    Y = " + e.Y + "\r\n" + txtConsole.Text;
+            int _rad_size = 12;
+      
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                if (_objects[i].GetType() == typeof(STA))
+                {
+                    STA _tsta = (STA)_objects[i];
+                    if (_tsta.x >= e.X - _rad_size && _tsta.x <= e.X + _rad_size && _tsta.y >= e.Y - _rad_size && _tsta.y <= e.Y + _rad_size)
+                    {
+                        txtConsole.Text = "Station selected for view :" + i.ToString() + "\r\n" + txtConsole.Text;
+                      //  SelectedVertex = i;
+                      //  SelectedX = e.X;
+                       // SelectedY = e.Y;
+                     //   SelectedZ = e.X + e.Y;
+                   //     _ob = SelectedObjectType.STA;
+                        StationInfo staForm = new StationInfo(_tsta);
+                        
+                        staForm.Show();
+                        return;
+                    }
+                }/*
+                else if (_objects[i].GetType() == typeof(AP))
+                {
+
+                    AP _tap = (AP)_objects[i];
+                    if (_tap.x >= e.X - _rad_size && _tap.x <= e.X + _rad_size && _tap.y >= e.Y - _rad_size && _tap.y <= e.Y + _rad_size)
+                    {
+                        txtConsole.Text = "AP selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
+                        SelectedVertex = i;
+                        SelectedX = e.X;
+                        SelectedY = e.Y;
+                        SelectedZ = e.X + e.Y;
+                        _ob = SelectedObjectType.AP;
+                        
+                        return;
+                    }
+
+                }*/
+            }
+         
+        }
         private void btnImage_MouseDown(object sender, MouseEventArgs e)
         {
             txtConsole.Text = "X = " + e.X + "    Y = " + e.Y + "\r\n" + txtConsole.Text;
             int _rad_size = 12;
+
+            for (int i = 0; i < _objects.Count; i++)
+            {
+                if (_objects[i].GetType() == typeof(STA))
+                {
+                    STA _tsta = (STA)_objects[i];
+                    if (_tsta.x >= e.X - _rad_size && _tsta.x <= e.X + _rad_size && _tsta.y >= e.Y - _rad_size && _tsta.y <= e.Y + _rad_size)
+                    {
+                        txtConsole.Text = "Station selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
+                        SelectedVertex = i;
+                        SelectedX = e.X;
+                        SelectedY = e.Y;
+                        SelectedZ = e.X + e.Y;
+                        _ob = SelectedObjectType.STA;
+                        return;
+                    }
+                }
+                else if (_objects[i].GetType() == typeof(AP)){
+
+                    AP _tap = (AP)_objects[i];
+                    if (_tap.x >= e.X - _rad_size && _tap.x <= e.X + _rad_size && _tap.y >= e.Y - _rad_size && _tap.y <= e.Y + _rad_size)
+                    {
+                        txtConsole.Text = "AP selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
+                        SelectedVertex = i;
+                        SelectedX = e.X;
+                        SelectedY = e.Y;
+                        SelectedZ = e.X + e.Y;
+                        _ob = SelectedObjectType.AP;
+                        return;
+                    }
+
+                }
+            }
+            /*
             for(int i = 0; i< VERT_SIZE;i++)
             {
                 if (_vert[i].x >= e.X - _rad_size && _vert[i].x <= e.X + _rad_size && _vert[i].y >= e.Y - _rad_size && _vert[i].y <= e.Y + _rad_size)
@@ -115,6 +201,7 @@ namespace Visualisator
                     return;
                 }
             }
+             */
         }
 
         private void btnImage_MouseUp(object sender, MouseEventArgs e)
@@ -130,16 +217,24 @@ namespace Visualisator
             if (SelectedX != e.X && SelectedY != e.Y)
             {
                 ConsolePrint("Start move object");
+
+                
                 if (_ob == SelectedObjectType.AP)
                 {
-                    _vert[SelectedVertex].x = e.X;
-                    _vert[SelectedVertex].y = e.Y;
+                    AP _tAP = (AP)_objects[SelectedVertex];
+                    ConsolePrint("Drawing " + _tAP.Address.getMAC());
+                      _tAP.x = e.X;
+                     _tAP.y = e.Y;
                 }
                 if ( _ob == SelectedObjectType.STA)
                 {
-                    ConsolePrint("Drawing " + _sta[SelectedVertex].Address.getMAC());
-                    _sta[SelectedVertex].x = e.X;
-                    _sta[SelectedVertex].y = e.Y;
+                    STA _tsta = (STA)_objects[SelectedVertex];
+                    ConsolePrint("Drawing " + _tsta.Address.getMAC());
+                    
+                    _tsta.x = e.X;
+                    _tsta.y = e.Y;
+         
+
                 }        
             }
             else
@@ -215,7 +310,8 @@ namespace Visualisator
             gr.Clear(Color.Black);
             for (int i = 0; i < VERT_SIZE; i++)
             {
-                gr.DrawPie(new Pen(_vert[i].VColor), (float)_vert[i].x, (float)_vert[i].y, 10, 10, 1, 360);
+                Rectangle myRectangle = new Rectangle((int)_vert[i].x, (int)_vert[i].y, 10, 10);
+                gr.DrawRectangle(new Pen(_vert[i].VColor), myRectangle);
             }
 
             for (int i = 0; i < STA_SIZE; i++)
@@ -229,6 +325,21 @@ namespace Visualisator
         private void btn_AddAP_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            
+        }
+
+        private void Form1_Leave(object sender, EventArgs e)
+        {
+            _MEDIUM.StopMedium = true;
+        }
+
+        private void btnStopMedium_Click(object sender, EventArgs e)
+        {
+            _MEDIUM.StopMedium = false;
         }
 
        

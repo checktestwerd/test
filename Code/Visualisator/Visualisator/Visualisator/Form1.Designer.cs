@@ -33,6 +33,7 @@
             this.btn_AddAP = new System.Windows.Forms.Button();
             this.btn_AddSTA = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnStopMedium = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -49,12 +50,13 @@
             // 
             this.txtConsole.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.txtConsole.Enabled = false;
+            this.txtConsole.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.txtConsole.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.txtConsole.Location = new System.Drawing.Point(522, 45);
             this.txtConsole.Multiline = true;
             this.txtConsole.Name = "txtConsole";
             this.txtConsole.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtConsole.Size = new System.Drawing.Size(291, 429);
+            this.txtConsole.Size = new System.Drawing.Size(331, 467);
             this.txtConsole.TabIndex = 1;
             // 
             // btn_AddAP
@@ -85,11 +87,22 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "Console";
             // 
+            // btnStopMedium
+            // 
+            this.btnStopMedium.Location = new System.Drawing.Point(589, 3);
+            this.btnStopMedium.Name = "btnStopMedium";
+            this.btnStopMedium.Size = new System.Drawing.Size(61, 23);
+            this.btnStopMedium.TabIndex = 5;
+            this.btnStopMedium.Text = "Stop Med";
+            this.btnStopMedium.UseVisualStyleBackColor = true;
+            this.btnStopMedium.Click += new System.EventHandler(this.btnStopMedium_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(822, 486);
+            this.ClientSize = new System.Drawing.Size(853, 513);
+            this.Controls.Add(this.btnStopMedium);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_AddSTA);
             this.Controls.Add(this.btn_AddAP);
@@ -97,7 +110,9 @@
             this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Leave += new System.EventHandler(this.Form1_Leave);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,6 +125,7 @@
         private System.Windows.Forms.Button btn_AddAP;
         private System.Windows.Forms.Button btn_AddSTA;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnStopMedium;
     }
 }
 
