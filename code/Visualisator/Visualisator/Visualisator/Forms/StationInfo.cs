@@ -79,6 +79,28 @@ namespace Visualisator
             {
                 btnScan.Enabled = true;
             }
+            else
+            {
+                txtDumpAll.Text = _sta.DumpAll();
+            }
+            lblAssociatedAP.Text = "Associated to " + _sta.getAssociatedAP_SSID();
+        }
+
+        private void btnConnectToBSS_Click(object sender, EventArgs e)
+        {
+            if (cmbAPList.Text.Length > 0)
+                _sta.ConnectToAP(cmbAPList.Text);
+           
+        }
+
+        private void btnDumpAll_Click(object sender, EventArgs e)
+        {
+            txtDumpAll.Text = _sta.DumpAll();
+        }
+
+        private void txtDumpAll_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

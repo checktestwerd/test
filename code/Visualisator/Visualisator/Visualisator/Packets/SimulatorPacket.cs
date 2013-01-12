@@ -44,14 +44,14 @@ namespace Visualisator.Packets
             _PacketBand = Band;
             _PacketChannel = Channel;
 
-            this._Type = "";
-            this._SubType = "";
+          //  this._Type = "";
+          //  this._SubType = "";
             this._SSID = "";
             this._Source = "";
             this._Reciver = "";
             this._Duration = "";
             this._Destination = "";
-            this._FramControllFlags = "";
+       //     this._FramControllFlags = "";
             this._MAX_SupportedRate = "64";
         }
 
@@ -59,12 +59,12 @@ namespace Visualisator.Packets
         {
   
         }
-        private String _Type; //"Control/managment/Data"
+     //   private String _Type; //"Control/managment/Data"
 
-        private String _Band;
-        private Int32 _Channel;
+      //  private String _Band;
+      //  private Int32 _Channel;
 
-        public Int32 Channel
+     /*   public Int32 Channel
         {
             get { return _Channel; }
             set { _Channel = value; }
@@ -85,14 +85,14 @@ namespace Visualisator.Packets
         {
             get { return _SubType; }
             set { _SubType = value; }
-        }
-        private String _FramControllFlags; // 00000000
+        }*/
+        //private String _FramControllFlags; // 00000000
 
-        public String FramControllFlags
-        {
-            get { return _FramControllFlags; }
-            set { _FramControllFlags = value; }
-        }
+      //  public String FramControllFlags
+      //  {
+       //     get { return _FramControllFlags; }
+      //      set { _FramControllFlags = value; }
+      //  }
         // 1 - Non strich order
         // 2 - Non protective frame
         // 3 - No more data
@@ -130,13 +130,13 @@ namespace Visualisator.Packets
             get { return _Source; }
             set { _Source = value; }
         }
-        private String _BSSID = "11:22:33:44:55:66";
+    /*    private String _BSSID = "11:22:33:44:55:66";
 
         public String BSSID
         {
             get { return _BSSID; }
             set { _BSSID = value; }
-        }
+        }*/
         private String _SSID = "TRA LA LA";
 
         public String SSID

@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Simulator\ByteArrayComparer.cs" />
+    <Compile Include="Packets\Connect.cs" />
+    <Compile Include="Packets\ConnectionACK.cs" />
     <Compile Include="RF\AP.cs" />
     <Compile Include="Forms\MediumInfo.cs">
       <SubType>Form</SubType>

@@ -21,7 +21,7 @@ namespace Visualisator
        // private AP[] _vert ;
        //S private STA[] _sta;
         private Int32 STA_SIZE = 15;
-        private Int32 APs_SIZE = 5;
+        private Int32 APs_SIZE = 10;
 
         private Int32 SelectedVertex = -1;
         private float SelectedX = 0;
@@ -31,8 +31,9 @@ namespace Visualisator
         private ArrayList _objects = new ArrayList();
 
         private Medium _MEDIUM = new Medium();
+        private Int32 _RADIUS = 50;
 
-
+        static Random rand = new Random();
         private Int32 _BOARDX = 600;
         private Int32 _BOARDY = 640;
         private enum SelectedObjectType
@@ -48,22 +49,32 @@ namespace Visualisator
         {
             InitializeComponent();
         }
+
+        private Double RandomC(Double perc)
+        {
+            Double _kefel = rand.NextDouble() ;
+
+            if(_kefel < 0.05 || _kefel > 0.95){
+                return (RandomC(perc));
+            }
+            return (_kefel * perc);
+        }
         private void CreateRandomSimulation()
         {
             ClearObjects();
-            Random rand = new Random();
+            
             for (int i = 0; i < APs_SIZE; i++)
             {
                 AP _ap = new AP(_MEDIUM);
                 _ap.setOperateChannel(rand.Next(1, 14));
-                _ap.SetVertex(rand.NextDouble() * _BOARDX, rand.NextDouble() * _BOARDY, rand.NextDouble() * 500);
+                _ap.SetVertex(RandomC(_BOARDX),RandomC( _BOARDY), rand.NextDouble() * 500);
                 _objects.Add(_ap);
             }
             for (int i = 0; i < STA_SIZE; i++)
             {
-                STA _sta = new STA(_MEDIUM);
+                STA _sta = new STA(_MEDIUM, _objects);
                 _sta.setOperateChannel(0);// (rand.Next(1, 14));       //  TODO delete this line
-                _sta.SetVertex(rand.NextDouble() * _BOARDX, rand.NextDouble() * _BOARDY, rand.NextDouble() * 500);
+                _sta.SetVertex(RandomC(_BOARDX), RandomC(_BOARDY), rand.NextDouble() * 500);
                 _objects.Add(_sta);
             }
         }
@@ -285,7 +296,7 @@ namespace Visualisator
                     STA _tsta = (STA)_objects[i];
 
                     gr.DrawPie(new Pen(_tsta.VColor), (float)_tsta.x-5, (float)_tsta.y-5, 10, 10, 1, 360);
-                    gr.DrawPie(new Pen(System.Drawing.Color.Purple), (float)_tsta.x-25, (float)_tsta.y-25,  50,  50, 1, 360);
+                    gr.DrawPie(new Pen(System.Drawing.Color.Purple), (float)_tsta.x - _RADIUS, (float)_tsta.y - _RADIUS, _RADIUS * 2, _RADIUS * 2, 1, 360);
                     string drawString = _tsta.getOperateChannel() + " " + _tsta.getMACAddress();
                     System.Drawing.Font drawFont = new System.Drawing.Font(
                         "Arial", 7);
@@ -300,7 +311,7 @@ namespace Visualisator
                 {
                     AP _tap = (AP)_objects[i];
                     Rectangle myRectangle = new Rectangle((int)_tap.x-5, (int)_tap.y-5, 10, 10);
-                    gr.DrawPie(new Pen( System.Drawing.Color.Purple), (float)_tap.x-25, (float)_tap.y-25,  50,  50, 1, 360);
+                    gr.DrawPie(new Pen(System.Drawing.Color.Purple), (float)_tap.x - _RADIUS, (float)_tap.y - _RADIUS, _RADIUS * 2, _RADIUS * 2, 1, 360);
                     gr.DrawRectangle(new Pen(_tap.VColor), myRectangle);
 
 

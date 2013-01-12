@@ -37,45 +37,22 @@ namespace Visualisator
                 _channel = Channel;
                 _type = _t;
             }
-        }       
-        private class ByteArrayComparer : IEqualityComparer {
-          public int GetHashCode(object obj) {
-              byte[] arr = ObjectToByteArray(obj);// as byte[];
-            int hash = 0;
-            foreach (byte b in arr) hash ^= b;
-            return hash;
-          }
-          public new bool Equals(object x, object y) {
-            byte[] arr1 =ObjectToByteArray(x);// as byte[];
-            byte[] arr2 = ObjectToByteArray(y);// as byte[];
-            if (arr1.Length != arr2.Length) return false;
-            for (int ix = 0; ix < arr1.Length; ++ix)
-              if (arr1[ix] != arr2[ix]) return false;
-            return true;
-          }
+        }
+       
 
-          private byte[] ObjectToByteArray(Object obj)
-          {
-              if (obj == null)
-                  return null;
-              BinaryFormatter bf = new BinaryFormatter();
-              MemoryStream ms = new MemoryStream();
-              bf.Serialize(ms, obj);
-              return ms.ToArray();
-          }
-    }
         private ArrayList _MBands = new ArrayList();
         private ArrayList _Mfrequency = new ArrayList();
         private ArrayList _MChannels = new ArrayList();
         private Boolean _mediumWork = true;
 
-        private Double _Radius = 25;
+        private Double _Radius = 50;
 
         private Hashtable _packets = new Hashtable(new ByteArrayComparer());
-        private Boolean _mediumClean = true;
         private Hashtable _T = new Hashtable(new ByteArrayComparer()) ;
         private ArrayList _B = new ArrayList();
 
+
+        //*********************************************************************
         public Boolean Registration(String Band, Int32 Channel, Double x, Double y)
         {
             Key Tk = new Key(Band,Channel);
@@ -87,7 +64,6 @@ namespace Visualisator
                     ArrayList _temp = (ArrayList)_T[Tk];
                     if (_temp != null)
                     {
-
                         foreach (var obj in _temp)
                         {
                             RFDevice _tV = (RFDevice)obj;
@@ -126,9 +102,9 @@ namespace Visualisator
             }
             catch (Exception) { return false; }
             return (true);
-            //_T.Add(Tk,
         }
 
+        //*********************************************************************
         private void Unregister(Key Tk,object rem)
         {
            Thread.Sleep(3);
@@ -138,36 +114,26 @@ namespace Visualisator
                lock (_T)
                {
                    _temp.Remove((RFDevice)rem);
-                   //_temp.
                    if (_temp.Count > 0)
                        _T[Tk] = _temp;
                    else
                        _T.Remove(Tk);
                }
            }
-           catch (Exception)
-           {
-               lock (_T)
-               {
-                   _temp.Remove((RFDevice)rem);
-                   //_temp.
-                   if (_temp.Count > 0)
-                       _T[Tk] = _temp;
-                   else
-                       _T.Remove(Tk);
-               }
-           }
-
-
+           catch (Exception){ }
         }
+
+        //*********************************************************************
         private Double getDistance(Double x1, Double y1, Double x2, Double y2)
         {
             Double ret = 0;
-
-            ret = Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+            Double x = (x1 - x2);
+            Double y = (y1 - y2);
+            ret = Math.Sqrt(x*x + y*y);
 
             return (ret);
         }
+        //*********************************************************************
         public String getMediumInfo()
         {
             String ret = "";
@@ -184,6 +150,7 @@ namespace Visualisator
 
             return (ret);
         }
+        //*********************************************************************
         public Medium(){
             _MBands.Add("G");
             _MBands.Add("N");
@@ -199,31 +166,27 @@ namespace Visualisator
             Enable();
         }
 
+        //*********************************************************************
         public void Enable()
         {
             _mediumWork = true;
             Thread newThread = new Thread(new ThreadStart(Run));
             newThread.Start();
         }
+        //*********************************************************************
         public void Disable()
         {
             _mediumWork = false;
         }
-
+        //*********************************************************************
         public void Run() 
         {
             while (_mediumWork)
             {                
-                //Console.WriteLine("Running in a different thread.");
                 Thread.Sleep(3000);
             }
         }
-
-        public void ClearMedium()
-        {
-
-        }
-
+        //*********************************************************************
         public Boolean MediumHaveAIRWork(RFDevice device)
         {
                 Key Pk = new Key(device.getOperateBand(), device.getOperateChannel());
@@ -231,9 +194,10 @@ namespace Visualisator
                     return true;
                 return false;
         }
+
+        //*********************************************************************
         public void SendData(SimulatorPacket pack)
         {
-            MediumClean = false;
             Key _Pk = new Key(pack.PacketBand, pack.PacketChannel);
             try
             {
@@ -264,25 +228,27 @@ namespace Visualisator
             }
             catch (Exception) { }
         }
-
+        //*********************************************************************
         private void ThreadableSendData(Key _Pk,object _ref)
         {
-            Thread.Sleep(3);
-
             ArrayList _temp = (ArrayList)_packets[_Pk];
+            Thread.Sleep(3);
 
             lock (_T)
             {
-                _temp.Remove((SimulatorPacket)_ref);
-                //_temp.
-                if (_temp.Count > 0)
-                    _packets[_Pk] = _temp;
-                else
-                    _packets.Remove(_Pk);
+                if (_temp != null)
+                {
+                    if (_temp.Contains(_ref))
+                        _temp.Remove((SimulatorPacket)_ref);
+  
+                    if (_temp.Count > 0)
+                        _packets[_Pk] = _temp;
+                    else
+                        _packets.Remove(_Pk);
+                }
             }
-            MediumClean = true;
-
         }
+        //*********************************************************************
         public IPacket ReceiveData(RFDevice device)
         {
             IPacket ret = null;
@@ -299,12 +265,17 @@ namespace Visualisator
                         foreach (object pack in LocalPackets)
                         {
                             SimulatorPacket _LocalPack = (SimulatorPacket)pack;
-                            if (getDistance(device.x, device.y, _LocalPack.X, _LocalPack.Y) < _Radius + _Radius)
+                            if (_LocalPack.Source != device.getMACAddress() && 
+                              (  _LocalPack.Destination.Equals(device.getMACAddress())||
+                               _LocalPack.Destination.Equals("FF:FF:FF:FF:FF:FF")
+                              ) && 
+                                getDistance(device.x, device.y, _LocalPack.X, _LocalPack.Y) < _Radius + _Radius)
                             {
 
-                                if (pack != null && typeof(Beacon) == _LocalPack.GetType())
+                                if (pack != null) //&& typeof(Beacon) == _LocalPack.GetType()
                                 {
                                     ret = (IPacket)_LocalPack;
+                                    LocalPackets.Remove(pack);
                                     return (_LocalPack);
                                 }
                             }
@@ -317,11 +288,11 @@ namespace Visualisator
             return (ret);
         }
 
-        public Boolean MediumClean
-        {
-            get { return _mediumClean; }
-            set { _mediumClean = value; }
-        }
+       // public Boolean MediumClean
+       // {
+       //     get { return _mediumClean; }
+      //      set { _mediumClean = value; }
+     //   }
 
         public Boolean StopMedium
         {
@@ -334,7 +305,13 @@ namespace Visualisator
         {
             String ret = "";
             //ret += "_packets\r\n";
-            ret += ObjectDumper.Dump(_packets);
+
+            foreach (DictionaryEntry p in _packets)
+            {
+               // ret += ObjectDumper.Dump(p.Key );
+                ret += ObjectDumper.Dump(p.Value);
+            }
+            
             return (ret);
         }
     }

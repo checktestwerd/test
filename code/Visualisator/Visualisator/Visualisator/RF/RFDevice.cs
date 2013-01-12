@@ -10,48 +10,38 @@ using System.IO;
 namespace Visualisator
 {
     [Serializable()]
-    class RFDevice: ISerializable
+    class RFDevice: ISerializable,IRFDevice
     {
+        public  String RF_STATUS = "NONE";
+        protected Medium _MEDIUM = null;
+        protected Boolean _Enabled = true;
+        private StringBuilder   _LOG            =   new StringBuilder();
+        private Double          _x;
+        private Double          _y;
+        private Double          _z;
+        private Color           _vColor;
+        private Int32           _OperateChannel =   0;
+        private String          _OperateBand    =   "";
+        private MAC             _address        =   new MAC();
+        protected ArrayList _AccessPoint = new ArrayList();
+        protected Hashtable _AccessPointTimeCounter = new Hashtable(new ByteArrayComparer());
+        protected ArrayList _AssociatedWithAPList = new ArrayList();
+        protected ArrayList _PointerToAllRfDevices = null;
 
-
-        public  class ByteArrayComparer : IEqualityComparer
+        public string DumpAll()
         {
-            public int GetHashCode(object obj)
-            {
-                byte[] arr = ObjectToByteArray(obj);// as byte[];
-                int hash = 0;
-                foreach (byte b in arr) hash ^= b;
-                return hash;
-            }
-            public new bool Equals(object x, object y)
-            {
-                byte[] arr1 = ObjectToByteArray(x);// as byte[];
-                byte[] arr2 = ObjectToByteArray(y);// as byte[];
-                if (arr1.Length != arr2.Length) return false;
-                for (int ix = 0; ix < arr1.Length; ++ix)
-                    if (arr1[ix] != arr2[ix]) return false;
-                return true;
-            }
+            String ret = "";
 
-            private byte[] ObjectToByteArray(Object obj)
-            {
-                if (obj == null)
-                    return null;
-                BinaryFormatter bf = new BinaryFormatter();
-                MemoryStream ms = new MemoryStream();
-                bf.Serialize(ms, obj);
-                return ms.ToArray();
-            }
+            ret = ObjectDumper.Dump(this);
+            ret += "_OperateChannel\r\n";
+            ret += ObjectDumper.Dump(_OperateChannel);
+            ret += "_OperateBand\r\n";
+            ret += ObjectDumper.Dump(_OperateBand);
+            ret += "_address\r\n";
+            ret += ObjectDumper.Dump(_address);
+
+            return (ret);
         }
-
-        private Double _x;
-        private Double _y;
-        private Double _z;
-        private Color _vColor;
-        private Int32 _OperateChannel = 0;
-        private String _OperateBand = "";
-        private MAC _address = new MAC();
-
         public MAC getMAC()
         {
             return _address;
@@ -66,34 +56,7 @@ namespace Visualisator
             _address = _mac;
         }
 
-        public double x
-        {
-            get { return _x; }
-            set { _x = value; }
-        }
-        public double y
-        {
-            get { return _y; }
-            set { _y = value; }
-        }
-        public double z
-        {
-            get { return _z; }
-            set { _z = value; }
-        }
 
-        public Color VColor
-        {
-            get { return _vColor; }
-            set { _vColor = value; }
-        }
-
-        public void SetVertex(Double x, Double y, Double z)
-        {
-            _x = x;
-            _y = y;
-            _z = z;
-        }
 
         public RFDevice(Double x, Double y, Double z)
         {
@@ -151,6 +114,73 @@ namespace Visualisator
             return (_OperateBand);
         }
 
-        
+
+
+        public void Enable()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendData(SimulatorPacket PacketToSend)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPacket ReceiveData(IRFDevice ThisDevice)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Disable()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterToMedium(int x, int y, int Channel, string Band, int Radius)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void AddToLog(string newLogEntry)
+        {
+            _LOG.Append( "[" + this.getMACAddress() + "]" + newLogEntry + "\r\n");
+        }
+
+        public double x
+        {
+            get { return _x; }
+            set { _x = value; }
+        }
+        public double y
+        {
+            get { return _y; }
+            set { _y = value; }
+        }
+        public double z
+        {
+            get { return _z; }
+            set { _z = value; }
+        }
+
+        public Color VColor
+        {
+            get { return _vColor; }
+            set { _vColor = value; }
+        }
+
+        public void SetVertex(Double x, Double y, Double z)
+        {
+            _x = x;
+            _y = y;
+            _z = z;
+        }
+
+
+
+        public void ParseReceivedPacket(IPacket pack)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

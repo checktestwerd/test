@@ -10,7 +10,7 @@ namespace Visualisator
     interface IRFDevice
     {
         void Enable();
-        void SendData(IPacket PacketToSend);
+        void SendData(SimulatorPacket PacketToSend);
         IPacket ReceiveData(IRFDevice ThisDevice);
         void Disable();
         void setOperateChannel(Int32 NewChannel);
@@ -20,6 +20,8 @@ namespace Visualisator
         String getOperateBand();
 
         void RegisterToMedium(Int32 x, Int32 y, Int32 Channel, String Band, Int32 Radius);
-    
+        void AddToLog(String newLogEntry);
+        String DumpAll();
+        void ParseReceivedPacket(IPacket pack);
     }
 }

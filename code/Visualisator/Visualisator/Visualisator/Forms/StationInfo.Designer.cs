@@ -30,19 +30,24 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblAssociatedAP = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.btnScan = new System.Windows.Forms.Button();
             this.lblMac = new System.Windows.Forms.Label();
             this.btnConnectToBSS = new System.Windows.Forms.Button();
             this.cmbAPList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnDumpAll = new System.Windows.Forms.Button();
+            this.txtDumpAll = new System.Windows.Forms.TextBox();
             this.tmrGUI = new System.Windows.Forms.Timer(this.components);
-            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lblAssociatedAP);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.btnScan);
             this.groupBox1.Controls.Add(this.lblMac);
@@ -56,6 +61,24 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cennect Info";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // lblAssociatedAP
+            // 
+            this.lblAssociatedAP.AutoSize = true;
+            this.lblAssociatedAP.Location = new System.Drawing.Point(28, 111);
+            this.lblAssociatedAP.Name = "lblAssociatedAP";
+            this.lblAssociatedAP.Size = new System.Drawing.Size(35, 13);
+            this.lblAssociatedAP.TabIndex = 7;
+            this.lblAssociatedAP.Text = "label3";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(28, 83);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "label2";
             // 
             // btnScan
             // 
@@ -84,6 +107,7 @@
             this.btnConnectToBSS.TabIndex = 3;
             this.btnConnectToBSS.Text = "Connect";
             this.btnConnectToBSS.UseVisualStyleBackColor = true;
+            this.btnConnectToBSS.Click += new System.EventHandler(this.btnConnectToBSS_Click);
             // 
             // cmbAPList
             // 
@@ -107,32 +131,46 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Location = new System.Drawing.Point(12, 241);
+            this.groupBox2.Controls.Add(this.btnDumpAll);
+            this.groupBox2.Controls.Add(this.txtDumpAll);
+            this.groupBox2.Location = new System.Drawing.Point(12, 234);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(559, 229);
+            this.groupBox2.Size = new System.Drawing.Size(559, 288);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Send Data";
             // 
+            // btnDumpAll
+            // 
+            this.btnDumpAll.Location = new System.Drawing.Point(70, 0);
+            this.btnDumpAll.Name = "btnDumpAll";
+            this.btnDumpAll.Size = new System.Drawing.Size(103, 23);
+            this.btnDumpAll.TabIndex = 1;
+            this.btnDumpAll.Text = "DumpAll";
+            this.btnDumpAll.UseVisualStyleBackColor = true;
+            this.btnDumpAll.Click += new System.EventHandler(this.btnDumpAll_Click);
+            // 
+            // txtDumpAll
+            // 
+            this.txtDumpAll.Location = new System.Drawing.Point(6, 29);
+            this.txtDumpAll.Multiline = true;
+            this.txtDumpAll.Name = "txtDumpAll";
+            this.txtDumpAll.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtDumpAll.Size = new System.Drawing.Size(547, 252);
+            this.txtDumpAll.TabIndex = 0;
+            this.txtDumpAll.TextChanged += new System.EventHandler(this.txtDumpAll_TextChanged);
+            // 
             // tmrGUI
             // 
             this.tmrGUI.Enabled = true;
+            this.tmrGUI.Interval = 20;
             this.tmrGUI.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 83);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "label2";
             // 
             // StationInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(581, 471);
+            this.ClientSize = new System.Drawing.Size(585, 527);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "StationInfo";
@@ -140,6 +178,8 @@
             this.Load += new System.EventHandler(this.StationInfo_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -155,5 +195,8 @@
         private System.Windows.Forms.Button btnScan;
         private System.Windows.Forms.Timer tmrGUI;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnDumpAll;
+        private System.Windows.Forms.TextBox txtDumpAll;
+        private System.Windows.Forms.Label lblAssociatedAP;
     }
 }
