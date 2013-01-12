@@ -13,15 +13,15 @@ using System.IO;
 
 namespace Visualisator
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         PictureBox piB;
         Bitmap bm;
         Graphics gr;
        // private AP[] _vert ;
        //S private STA[] _sta;
-        private Int32 STA_SIZE = 3;
-        private Int32 VERT_SIZE = 2;
+        private Int32 STA_SIZE = 15;
+        private Int32 APs_SIZE = 5;
 
         private Int32 SelectedVertex = -1;
         private float SelectedX = 0;
@@ -32,6 +32,9 @@ namespace Visualisator
 
         private Medium _MEDIUM = new Medium();
 
+
+        private Int32 _BOARDX = 600;
+        private Int32 _BOARDY = 640;
         private enum SelectedObjectType
         {
             STA,
@@ -41,11 +44,29 @@ namespace Visualisator
         private SelectedObjectType _ob;
 
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
-
+        private void CreateRandomSimulation()
+        {
+            ClearObjects();
+            Random rand = new Random();
+            for (int i = 0; i < APs_SIZE; i++)
+            {
+                AP _ap = new AP(_MEDIUM);
+                _ap.setOperateChannel(rand.Next(1, 14));
+                _ap.SetVertex(rand.NextDouble() * _BOARDX, rand.NextDouble() * _BOARDY, rand.NextDouble() * 500);
+                _objects.Add(_ap);
+            }
+            for (int i = 0; i < STA_SIZE; i++)
+            {
+                STA _sta = new STA(_MEDIUM);
+                _sta.setOperateChannel(0);// (rand.Next(1, 14));       //  TODO delete this line
+                _sta.SetVertex(rand.NextDouble() * _BOARDX, rand.NextDouble() * _BOARDY, rand.NextDouble() * 500);
+                _objects.Add(_sta);
+            }
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
            
@@ -53,7 +74,7 @@ namespace Visualisator
             piB = new PictureBox();
             piB.Parent = this;
             piB.Location = new Point(10, 10);
-            piB.Size = new Size(500, 500);
+            piB.Size = new Size(_BOARDX, _BOARDY);
             piB.BackColor = Color.Black;
 
               piB.AllowDrop = true; 
@@ -70,23 +91,7 @@ namespace Visualisator
         }
 
 
-        private void CreateRandomSimulation()
-        {
-            ClearObjects();
-            Random rand = new Random();
-            for (int i = 0; i < VERT_SIZE; i++)
-            {
-                AP _ap = new AP(_MEDIUM);
-                _ap.SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
-                _objects.Add(_ap);
-            }
-            for (int i = 0; i < STA_SIZE; i++)
-            {
-                STA _sta = new STA(_MEDIUM);
-                _sta.SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
-                _objects.Add(_sta);
-            }
-        }
+
 
         private void BoardDblClick(object sender, MouseEventArgs e)
         {
@@ -189,14 +194,14 @@ namespace Visualisator
                 if (_ob == SelectedObjectType.AP)
                 {
                     AP _tAP = (AP)_objects[SelectedVertex];
-                    ConsolePrint("Drawing " + _tAP.Address.getMAC());
+                    ConsolePrint("Drawing " + _tAP.getMAC().getMAC());
                       _tAP.x = e.X;
                      _tAP.y = e.Y;
                 }
                 if ( _ob == SelectedObjectType.STA)
                 {
                     STA _tsta = (STA)_objects[SelectedVertex];
-                    ConsolePrint("Drawing " + _tsta.Address.getMAC());
+                    ConsolePrint("Drawing " + _tsta.getMACAddress());
                     
                     _tsta.x = e.X;
                     _tsta.y = e.Y;
@@ -279,19 +284,40 @@ namespace Visualisator
                 {
                     STA _tsta = (STA)_objects[i];
 
-                    gr.DrawPie(new Pen(_tsta.VColor), (float)_tsta.x, (float)_tsta.y, 12, 10, 1, 360);
-            
+                    gr.DrawPie(new Pen(_tsta.VColor), (float)_tsta.x-5, (float)_tsta.y-5, 10, 10, 1, 360);
+                    gr.DrawPie(new Pen(System.Drawing.Color.Purple), (float)_tsta.x-25, (float)_tsta.y-25,  50,  50, 1, 360);
+                    string drawString = _tsta.getOperateChannel() + " " + _tsta.getMACAddress();
+                    System.Drawing.Font drawFont = new System.Drawing.Font(
+                        "Arial", 7);
+                    System.Drawing.SolidBrush drawBrush = new
+                        System.Drawing.SolidBrush(System.Drawing.Color.YellowGreen);
+
+                    gr.DrawString(drawString, drawFont, drawBrush, (int)_tsta.x + 10, (int)_tsta.y + 10);
+                    drawFont.Dispose();
+                    drawBrush.Dispose();
                 }
                 else if (_objects[i].GetType() == typeof(AP))
                 {
                     AP _tap = (AP)_objects[i];
-                    Rectangle myRectangle = new Rectangle((int)_tap.x, (int)_tap.y, 10, 10);
+                    Rectangle myRectangle = new Rectangle((int)_tap.x-5, (int)_tap.y-5, 10, 10);
+                    gr.DrawPie(new Pen( System.Drawing.Color.Purple), (float)_tap.x-25, (float)_tap.y-25,  50,  50, 1, 360);
                     gr.DrawRectangle(new Pen(_tap.VColor), myRectangle);
-            
+
+
+                    string drawString = _tap.getOperateChannel() + " " + _tap.SSID + " " + _tap.getMACAddress();
+                    System.Drawing.Font drawFont = new System.Drawing.Font(
+                        "Arial", 7);
+                    System.Drawing.SolidBrush drawBrush = new
+                        System.Drawing.SolidBrush(System.Drawing.Color.White);
+
+                    gr.DrawString(drawString, drawFont, drawBrush, (int)_tap.x+10, (int)_tap.y-10);
+                    drawFont.Dispose();
+                    drawBrush.Dispose();
+              
                 }
             }
             
-            for (int i = 0; i < VERT_SIZE; i++)
+            for (int i = 0; i < APs_SIZE; i++)
             {
             }
 
@@ -372,7 +398,7 @@ namespace Visualisator
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 //AddToErrorLog(ex.Message);
             }
@@ -402,6 +428,52 @@ namespace Visualisator
         {
             ClearObjects();
         }
+
+        private void btnShowMediumInfo_Click(object sender, EventArgs e)
+        {
+            MediumInfo mediumForm = new MediumInfo(_MEDIUM);
+            mediumForm.Show();
+        }
+
+        private void openDLGOpenSimulationSettings_FileOk(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void btn_AddSTA_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtConsole_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+          /*
+            piB = new PictureBox();
+            piB.Parent = this;
+            piB.Location = new Point(10, 10);
+            piB.Size = new Size(_BOARDX, this.Height - 80);
+            piB.BackColor = Color.Black;
+
+            piB.AllowDrop = true;
+            bm.Dispose();
+            gr.Dispose();
+            bm = new Bitmap(piB.Width, piB.Height);
+
+            gr = Graphics.FromImage(bm);
+            */
+        }
+
+
 
        
     }

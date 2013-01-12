@@ -32,6 +32,9 @@ namespace Visualisator
 
         private Medium _MEDIUM = new Medium();
 
+
+        private Int32 _BOARDX = 600;
+        private Int32 _BOARDY = 640;
         private enum SelectedObjectType
         {
             STA,
@@ -53,14 +56,14 @@ namespace Visualisator
             {
                 AP _ap = new AP(_MEDIUM);
                 _ap.setOperateChannel(rand.Next(1, 14));
-                _ap.SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
+                _ap.SetVertex(rand.NextDouble() * _BOARDX, rand.NextDouble() * _BOARDY, rand.NextDouble() * 500);
                 _objects.Add(_ap);
             }
             for (int i = 0; i < STA_SIZE; i++)
             {
                 STA _sta = new STA(_MEDIUM);
                 _sta.setOperateChannel(0);// (rand.Next(1, 14));       //  TODO delete this line
-                _sta.SetVertex(rand.NextDouble() * 500, rand.NextDouble() * 500, rand.NextDouble() * 500);
+                _sta.SetVertex(rand.NextDouble() * _BOARDX, rand.NextDouble() * _BOARDY, rand.NextDouble() * 500);
                 _objects.Add(_sta);
             }
         }
@@ -71,7 +74,7 @@ namespace Visualisator
             piB = new PictureBox();
             piB.Parent = this;
             piB.Location = new Point(10, 10);
-            piB.Size = new Size(500, 500);
+            piB.Size = new Size(_BOARDX, _BOARDY);
             piB.BackColor = Color.Black;
 
               piB.AllowDrop = true; 
@@ -430,6 +433,44 @@ namespace Visualisator
         {
             MediumInfo mediumForm = new MediumInfo(_MEDIUM);
             mediumForm.Show();
+        }
+
+        private void openDLGOpenSimulationSettings_FileOk(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void btn_AddSTA_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtConsole_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+          /*
+            piB = new PictureBox();
+            piB.Parent = this;
+            piB.Location = new Point(10, 10);
+            piB.Size = new Size(_BOARDX, this.Height - 80);
+            piB.BackColor = Color.Black;
+
+            piB.AllowDrop = true;
+            bm.Dispose();
+            gr.Dispose();
+            bm = new Bitmap(piB.Width, piB.Height);
+
+            gr = Graphics.FromImage(bm);
+            */
         }
 
 

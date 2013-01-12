@@ -28,17 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnScan = new System.Windows.Forms.Button();
             this.lblMac = new System.Windows.Forms.Label();
             this.btnConnectToBSS = new System.Windows.Forms.Button();
             this.cmbAPList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tmrGUI = new System.Windows.Forms.Timer(this.components);
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.btnScan);
             this.groupBox1.Controls.Add(this.lblMac);
             this.groupBox1.Controls.Add(this.btnConnectToBSS);
             this.groupBox1.Controls.Add(this.cmbAPList);
@@ -49,6 +55,17 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cennect Info";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // btnScan
+            // 
+            this.btnScan.Location = new System.Drawing.Point(390, 50);
+            this.btnScan.Name = "btnScan";
+            this.btnScan.Size = new System.Drawing.Size(92, 24);
+            this.btnScan.TabIndex = 5;
+            this.btnScan.Text = "Scan";
+            this.btnScan.UseVisualStyleBackColor = true;
+            this.btnScan.Click += new System.EventHandler(this.btnScan_Click);
             // 
             // lblMac
             // 
@@ -75,6 +92,8 @@
             this.cmbAPList.Name = "cmbAPList";
             this.cmbAPList.Size = new System.Drawing.Size(126, 21);
             this.cmbAPList.TabIndex = 2;
+            this.cmbAPList.SelectedIndexChanged += new System.EventHandler(this.cmbAPList_SelectedIndexChanged);
+            this.cmbAPList.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmbAPList_MouseClick);
             // 
             // label1
             // 
@@ -94,6 +113,20 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Send Data";
+            // 
+            // tmrGUI
+            // 
+            this.tmrGUI.Enabled = true;
+            this.tmrGUI.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(28, 83);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "label2";
             // 
             // StationInfo
             // 
@@ -119,5 +152,8 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnConnectToBSS;
         private System.Windows.Forms.Label lblMac;
+        private System.Windows.Forms.Button btnScan;
+        private System.Windows.Forms.Timer tmrGUI;
+        private System.Windows.Forms.Label label2;
     }
 }

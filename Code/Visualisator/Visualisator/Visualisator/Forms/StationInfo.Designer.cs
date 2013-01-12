@@ -37,11 +37,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tmrGUI = new System.Windows.Forms.Timer(this.components);
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.btnScan);
             this.groupBox1.Controls.Add(this.lblMac);
             this.groupBox1.Controls.Add(this.btnConnectToBSS);
@@ -117,6 +119,15 @@
             this.tmrGUI.Enabled = true;
             this.tmrGUI.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(28, 83);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "label2";
+            // 
             // StationInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -143,5 +154,6 @@
         private System.Windows.Forms.Label lblMac;
         private System.Windows.Forms.Button btnScan;
         private System.Windows.Forms.Timer tmrGUI;
+        private System.Windows.Forms.Label label2;
     }
 }

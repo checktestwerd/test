@@ -1,6 +1,6 @@
 ﻿namespace Visualisator
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -38,11 +38,12 @@
             this.button3 = new System.Windows.Forms.Button();
             this.openDLGOpenSimulationSettings = new System.Windows.Forms.OpenFileDialog();
             this.button4 = new System.Windows.Forms.Button();
+            this.btnShowMediumInfo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(522, 3);
+            this.button1.Location = new System.Drawing.Point(616, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(61, 23);
             this.button1.TabIndex = 0;
@@ -56,16 +57,17 @@
             this.txtConsole.Enabled = false;
             this.txtConsole.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.txtConsole.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.txtConsole.Location = new System.Drawing.Point(522, 45);
+            this.txtConsole.Location = new System.Drawing.Point(616, 72);
             this.txtConsole.Multiline = true;
             this.txtConsole.Name = "txtConsole";
             this.txtConsole.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtConsole.Size = new System.Drawing.Size(331, 467);
+            this.txtConsole.Size = new System.Drawing.Size(331, 577);
             this.txtConsole.TabIndex = 1;
+            this.txtConsole.TextChanged += new System.EventHandler(this.txtConsole_TextChanged);
             // 
             // btn_AddAP
             // 
-            this.btn_AddAP.Location = new System.Drawing.Point(667, 3);
+            this.btn_AddAP.Location = new System.Drawing.Point(761, 2);
             this.btn_AddAP.Name = "btn_AddAP";
             this.btn_AddAP.Size = new System.Drawing.Size(70, 23);
             this.btn_AddAP.TabIndex = 2;
@@ -75,25 +77,27 @@
             // 
             // btn_AddSTA
             // 
-            this.btn_AddSTA.Location = new System.Drawing.Point(743, 3);
+            this.btn_AddSTA.Location = new System.Drawing.Point(837, 2);
             this.btn_AddSTA.Name = "btn_AddSTA";
             this.btn_AddSTA.Size = new System.Drawing.Size(70, 23);
             this.btn_AddSTA.TabIndex = 3;
             this.btn_AddSTA.Text = "Add STA";
             this.btn_AddSTA.UseVisualStyleBackColor = true;
+            this.btn_AddSTA.Click += new System.EventHandler(this.btn_AddSTA_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(529, 29);
+            this.label1.Location = new System.Drawing.Point(623, 28);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "Console";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // btnStopMedium
             // 
-            this.btnStopMedium.Location = new System.Drawing.Point(589, 3);
+            this.btnStopMedium.Location = new System.Drawing.Point(683, 2);
             this.btnStopMedium.Name = "btnStopMedium";
             this.btnStopMedium.Size = new System.Drawing.Size(61, 23);
             this.btnStopMedium.TabIndex = 5;
@@ -103,9 +107,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(628, 21);
+            this.button2.Location = new System.Drawing.Point(805, 47);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(77, 28);
+            this.button2.Size = new System.Drawing.Size(77, 19);
             this.button2.TabIndex = 6;
             this.button2.Text = "Save";
             this.button2.UseVisualStyleBackColor = true;
@@ -113,9 +117,9 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(723, 20);
+            this.button3.Location = new System.Drawing.Point(719, 47);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(80, 28);
+            this.button3.Size = new System.Drawing.Size(80, 19);
             this.button3.TabIndex = 7;
             this.button3.Text = "Load";
             this.button3.UseVisualStyleBackColor = true;
@@ -124,22 +128,34 @@
             // openDLGOpenSimulationSettings
             // 
             this.openDLGOpenSimulationSettings.FileName = "openFileDialog1";
+            this.openDLGOpenSimulationSettings.FileOk += new System.ComponentModel.CancelEventHandler(this.openDLGOpenSimulationSettings_FileOk);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(687, 54);
+            this.button4.Location = new System.Drawing.Point(616, 47);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(87, 33);
+            this.button4.Size = new System.Drawing.Size(97, 19);
             this.button4.TabIndex = 8;
             this.button4.Text = "Create";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
-            // Form1
+            // btnShowMediumInfo
+            // 
+            this.btnShowMediumInfo.Location = new System.Drawing.Point(805, 23);
+            this.btnShowMediumInfo.Name = "btnShowMediumInfo";
+            this.btnShowMediumInfo.Size = new System.Drawing.Size(77, 22);
+            this.btnShowMediumInfo.TabIndex = 9;
+            this.btnShowMediumInfo.Text = "Medium";
+            this.btnShowMediumInfo.UseVisualStyleBackColor = true;
+            this.btnShowMediumInfo.Click += new System.EventHandler(this.btnShowMediumInfo_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(853, 513);
+            this.ClientSize = new System.Drawing.Size(952, 661);
+            this.Controls.Add(this.btnShowMediumInfo);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -149,12 +165,13 @@
             this.Controls.Add(this.btn_AddAP);
             this.Controls.Add(this.txtConsole);
             this.Controls.Add(this.button1);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Leave += new System.EventHandler(this.Form1_Leave);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -172,6 +189,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.OpenFileDialog openDLGOpenSimulationSettings;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnShowMediumInfo;
     }
 }
 
