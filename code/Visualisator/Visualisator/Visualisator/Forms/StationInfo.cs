@@ -25,7 +25,7 @@ namespace Visualisator
         private void StationInfo_Load(object sender, EventArgs e)
         {
             lblMac.Text = _sta.getMACAddress();
-            label2.Text = "X:" + _sta.x + " Y:" + _sta.y; 
+            lblCoordinates.Text = "X:" + (int)_sta.x + " Y:" + (int)_sta.y; 
             PrintAPList();
         }
 
@@ -83,7 +83,7 @@ namespace Visualisator
             {
                 txtDumpAll.Text = _sta.DumpAll();
             }
-            lblAssociatedAP.Text = "Associated to " + _sta.getAssociatedAP_SSID();
+            lblAssociatedAP.Text =  _sta.getAssociatedAP_SSID();
         }
 
         private void btnConnectToBSS_Click(object sender, EventArgs e)

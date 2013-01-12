@@ -45,6 +45,9 @@ namespace Visualisator
         private ArrayList _MChannels = new ArrayList();
         private Boolean _mediumWork = true;
 
+        private Int32 _ConnectCounter = 0;
+        private Int32 _ConnectAckCounter = 0;
+
         private Double _Radius = 50;
 
         private Hashtable _packets = new Hashtable(new ByteArrayComparer());
@@ -195,6 +198,15 @@ namespace Visualisator
                 return false;
         }
 
+
+        public Int32 getConnectCounter()
+        {
+            return (_ConnectCounter);
+        }
+        public Int32 getConnectAckCounter()
+        {
+            return (_ConnectAckCounter);
+        }
         //*********************************************************************
         public void SendData(SimulatorPacket pack)
         {
@@ -203,6 +215,20 @@ namespace Visualisator
             {
                 if (pack != null)
                 {
+                    if (pack.GetType() == typeof(Connect))
+                    {
+                        _ConnectCounter++;
+
+                        if (_ConnectCounter == 36000)
+                            _ConnectCounter = 0;
+                    }
+                    else if (pack.GetType() == typeof(ConnectionACK))
+                    {
+                        _ConnectAckCounter++;
+
+                        if (_ConnectAckCounter == 36000)
+                            _ConnectAckCounter = 0;
+                    }
                     ArrayList LocalPackets = null;
                     if (_packets.ContainsKey(_Pk))
                     {
@@ -233,50 +259,54 @@ namespace Visualisator
         {
             ArrayList _temp = (ArrayList)_packets[_Pk];
             Thread.Sleep(3);
-
-            lock (_T)
+            if (_temp != null)
             {
-                if (_temp != null)
+                lock (_packets)
                 {
-                    if (_temp.Contains(_ref))
-                        _temp.Remove((SimulatorPacket)_ref);
+                   // if (_temp != null)
+                   // {
+                        if (_temp.Contains(_ref))
+                            _temp.Remove((SimulatorPacket)_ref);
   
-                    if (_temp.Count > 0)
-                        _packets[_Pk] = _temp;
-                    else
-                        _packets.Remove(_Pk);
+                        if (_temp.Count > 0)
+                            _packets[_Pk] = _temp;
+                        else
+                            _packets.Remove(_Pk);
+                   // }
                 }
             }
         }
         //*********************************************************************
         public IPacket ReceiveData(RFDevice device)
         {
-            IPacket ret = null;
             try
             {
-
-                Key Pk = new Key(device.getOperateBand(), device.getOperateChannel());
                 if (_packets != null)
                 {
-
+                    Key Pk = new Key(device.getOperateBand(), device.getOperateChannel());
                     if (_packets.ContainsKey(Pk))
                     {
                         ArrayList LocalPackets = (ArrayList)_packets[Pk];
                         foreach (object pack in LocalPackets)
                         {
-                            SimulatorPacket _LocalPack = (SimulatorPacket)pack;
-                            if (_LocalPack.Source != device.getMACAddress() && 
-                              (  _LocalPack.Destination.Equals(device.getMACAddress())||
-                               _LocalPack.Destination.Equals("FF:FF:FF:FF:FF:FF")
-                              ) && 
-                                getDistance(device.x, device.y, _LocalPack.X, _LocalPack.Y) < _Radius + _Radius)
+                            if (pack != null)
                             {
-
-                                if (pack != null) //&& typeof(Beacon) == _LocalPack.GetType()
+                                SimulatorPacket _LocalPack = (SimulatorPacket)pack;
+                                Boolean _BROADCAST = false;
+                                if (_LocalPack.Destination.Equals("FF:FF:FF:FF:FF:FF"))
                                 {
-                                    ret = (IPacket)_LocalPack;
-                                    LocalPackets.Remove(pack);
+                                    _BROADCAST = true;
+                                }
+
+                                if (_LocalPack.Source != device.getMACAddress() &&
+                                  (_LocalPack.Destination.Equals(device.getMACAddress()) || _BROADCAST) &&
+                                    getDistance(device.x, device.y, _LocalPack.X, _LocalPack.Y) < _Radius + _Radius)
+                                {
+
+                                    if (!_BROADCAST)
+                                        LocalPackets.Remove(pack);
                                     return (_LocalPack);
+                     
                                 }
                             }
                             // loop body
@@ -285,7 +315,7 @@ namespace Visualisator
                 }
             }
             catch (Exception) { }
-            return (ret);
+            return (null);
         }
 
        // public Boolean MediumClean

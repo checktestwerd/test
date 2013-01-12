@@ -30,6 +30,8 @@ namespace Visualisator
 
 
         private static Random random = new Random((int)DateTime.Now.Ticks);//thanks to McAden
+
+        //*********************************************************************
         private string RandomString(int size)
         {
             StringBuilder builder = new StringBuilder();
@@ -43,6 +45,12 @@ namespace Visualisator
             return builder.ToString();
         }
 
+
+        public Int32 CenntedDevicesCount()
+        {
+            return _AssociatedDevices.Count;
+        }
+        //*********************************************************************
         public AP(Medium med)
         {
             this._MEDIUM = med;
@@ -52,10 +60,12 @@ namespace Visualisator
             
             Enable();
         }
+        //*********************************************************************
         ~AP()
         {
             _Enabled = false;
         }
+        //*********************************************************************
         public void Enable()
         {
             RF_STATUS = "NONE";
@@ -67,13 +77,12 @@ namespace Visualisator
           newThreadListen.Start();
 
         }
-
+        //*********************************************************************
         public void Disable()
         {
             _Enabled = false;
-
         }
-
+        //*********************************************************************
         public void SendBeacon()
         {
             while (_Enabled)
@@ -84,18 +93,18 @@ namespace Visualisator
                 Thread.Sleep(_BeaconPeriod);               
             }
         }
-
+        //*********************************************************************
         public void SendConnectionACK(String DEST_MAN)
         {
-            while (_Enabled)
-            {
+            //while (_Enabled)
+            //{
                 ConnectionACK _ack = new ConnectionACK(CreatePacket());
                 _ack.Destination = DEST_MAN;
                 this.SendData(_ack);
                 //Thread.Sleep(_BeaconPeriod);
-            }
+            //}
         }
-
+        //*********************************************************************
         public void SendData(SimulatorPacket pack)
         {
 
@@ -114,15 +123,13 @@ namespace Visualisator
             Thread.Sleep(ran.Next(5, 15));
     
         }
-
-
-
+        //*********************************************************************
         public Packets.IPacket ReceiveData(IRFDevice ThisDevice)
         {
             throw new NotImplementedException();
         }
 
-
+        //*********************************************************************
         public void Listen()
         {
             while (_Enabled)
@@ -146,14 +153,30 @@ namespace Visualisator
                 Thread.Sleep(2);
             }
         }
+        //*********************************************************************
         public void ParseReceivedPacket(IPacket pack)
         {
-            if (pack.GetType() == typeof(Packets.Connect))
+            Type Pt = pack.GetType();
+            if (Pt == typeof(Connect))
             {
-                Packets.Connect _conn = (Packets.Connect)pack;
-                _AssociatedDevices.Add(_conn.Source);
+                Connect _conn = (Connect)pack;
+                if (!_AssociatedDevices.Contains(_conn.Source))
+                    _AssociatedDevices.Add(_conn.Source);
                 SendConnectionACK(_conn.Source);
 
+            }
+            else if (Pt == typeof(KeepAlive))
+            {
+                KeepAlive _wp   = (KeepAlive)pack;
+            }
+            else if (Pt == typeof(Data))
+            {
+                Data _wp        = (Data)pack;
+                
+            }
+            else if (Pt == typeof(DataAck))
+            {
+                DataAck _wp     = (DataAck)pack;
             }
             else
             {
@@ -161,6 +184,7 @@ namespace Visualisator
                 //Console.WriteLine("[" + getMACAddress() + "]" + " listening.");
             }
         }
+        //*********************************************************************
         public void RegisterToMedium(int x, int y, int Channel, string Band, int Radius)
         {
             //

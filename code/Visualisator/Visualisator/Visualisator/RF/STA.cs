@@ -53,6 +53,8 @@ namespace Visualisator
             Int32 tRYStOcONNECT = 0;
             _conn.SSID = _connecttoAP.SSID;
             _conn.Destination = _connecttoAP.getMACAddress();
+            _conn.PacketChannel = _connecttoAP.getOperateChannel();
+            _conn.PacketBand = _connecttoAP.getOperateBand();
             this.setOperateChannel(_connecttoAP.getOperateChannel());
             this.setOperateBand(_connecttoAP.getOperateBand());
             while (!_AssociatedWithAPList.Contains(SSID) && tRYStOcONNECT < 10)

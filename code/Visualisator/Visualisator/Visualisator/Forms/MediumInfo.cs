@@ -36,7 +36,8 @@ namespace Visualisator
         {
             try
             {
-
+                lblConnectCounter.Text = _MEDIUM.getConnectCounter().ToString();
+                lblConnectAckCounter.Text = _MEDIUM.getConnectAckCounter().ToString();
                 String data = _MEDIUM.DumpPackets();
                 if (data.Length > 0)
                     txtPacketsDump.Text = data;
@@ -48,6 +49,11 @@ namespace Visualisator
         {
             timer1.Enabled = false;
             this.Close();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -20,8 +20,8 @@ namespace Visualisator
         Graphics gr;
        // private AP[] _vert ;
        //S private STA[] _sta;
-        private Int32 STA_SIZE = 15;
-        private Int32 APs_SIZE = 10;
+        private Int32 STA_SIZE = 2;
+        private Int32 APs_SIZE = 2;
 
         private Int32 SelectedVertex = -1;
         private float SelectedX = 0;
@@ -127,7 +127,7 @@ namespace Visualisator
                         staForm.Show();
                         return;
                     }
-                }/*
+                }
                 else if (_objects[i].GetType() == typeof(AP))
                 {
 
@@ -135,16 +135,13 @@ namespace Visualisator
                     if (_tap.x >= e.X - _rad_size && _tap.x <= e.X + _rad_size && _tap.y >= e.Y - _rad_size && _tap.y <= e.Y + _rad_size)
                     {
                         txtConsole.Text = "AP selected for move :" + i.ToString() + "\r\n" + txtConsole.Text;
-                        SelectedVertex = i;
-                        SelectedX = e.X;
-                        SelectedY = e.Y;
-                        SelectedZ = e.X + e.Y;
-                        _ob = SelectedObjectType.AP;
+                        APInfo apInf = new APInfo(_tap);
+                        apInf.Show();
                         
                         return;
                     }
 
-                }*/
+                }
             }
          
         }

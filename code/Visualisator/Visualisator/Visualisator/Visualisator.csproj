@@ -46,6 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\APInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\APInfo.Designer.cs">
+      <DependentUpon>APInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Packets\Data.cs" />
+    <Compile Include="Packets\DataAck.cs" />
+    <Compile Include="Packets\KeepAlive.cs" />
     <Compile Include="Simulator\ByteArrayComparer.cs" />
     <Compile Include="Packets\Connect.cs" />
     <Compile Include="Packets\ConnectionACK.cs" />
@@ -83,6 +92,9 @@
       <DependentUpon>StationInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="RF\RFDevice.cs" />
+    <EmbeddedResource Include="Forms\APInfo.resx">
+      <DependentUpon>APInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

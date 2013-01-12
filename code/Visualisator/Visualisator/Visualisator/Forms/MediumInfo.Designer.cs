@@ -35,6 +35,10 @@
             this.txtPacketsDump = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblConnectCounter = new System.Windows.Forms.Label();
+            this.lblConnectAckCounter = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -55,6 +59,7 @@
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size(368, 491);
             this.textBox1.TabIndex = 1;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // timer1
             // 
@@ -90,11 +95,51 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(194, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(86, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Connect counter";
+            // 
+            // lblConnectCounter
+            // 
+            this.lblConnectCounter.AutoSize = true;
+            this.lblConnectCounter.Location = new System.Drawing.Point(310, 6);
+            this.lblConnectCounter.Name = "lblConnectCounter";
+            this.lblConnectCounter.Size = new System.Drawing.Size(35, 13);
+            this.lblConnectCounter.TabIndex = 6;
+            this.lblConnectCounter.Text = "label3";
+            // 
+            // lblConnectAckCounter
+            // 
+            this.lblConnectAckCounter.AutoSize = true;
+            this.lblConnectAckCounter.Location = new System.Drawing.Point(310, 19);
+            this.lblConnectAckCounter.Name = "lblConnectAckCounter";
+            this.lblConnectAckCounter.Size = new System.Drawing.Size(35, 13);
+            this.lblConnectAckCounter.TabIndex = 8;
+            this.lblConnectAckCounter.Text = "label3";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(194, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(110, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Connect ACK counter";
+            // 
             // MediumInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(882, 527);
+            this.Controls.Add(this.lblConnectAckCounter);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.lblConnectCounter);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtPacketsDump);
@@ -116,5 +161,9 @@
         private System.Windows.Forms.TextBox txtPacketsDump;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblConnectCounter;
+        private System.Windows.Forms.Label lblConnectAckCounter;
+        private System.Windows.Forms.Label label4;
     }
 }
