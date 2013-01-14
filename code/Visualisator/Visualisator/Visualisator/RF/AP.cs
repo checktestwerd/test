@@ -89,6 +89,7 @@ namespace Visualisator
             {
                 Beacon _beac = new Beacon(CreatePacket());
                 _beac.Destination = "FF:FF:FF:FF:FF:FF";
+                //_beac.setTransmitRate(300);
                 this.SendData(_beac);
                 Thread.Sleep(_BeaconPeriod);               
             }
@@ -116,7 +117,11 @@ namespace Visualisator
             RF_STATUS = "TX";
             while (!_MEDIUM.Registration(this.getOperateBand(),this.getOperateChannel(),this.x,this.y))
             {
+                RF_STATUS = "NONE";
                 Thread.Sleep(ran.Next(2, 4));
+                while (RF_STATUS != "NONE")
+                    Thread.Sleep(ran.Next(1, 3));
+                RF_STATUS = "TX";
             }
             _MEDIUM.SendData(pack);
             RF_STATUS = "NONE";

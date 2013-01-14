@@ -29,7 +29,7 @@ namespace Visualisator
             {
                 textBox1.Text = _MEDIUM.getMediumInfo();
             }
-            catch (Exception) { }
+            catch (Exception ex) { Console.WriteLine("getMediumInfo :" + ex.Message); }
         }
 
         private void timer1_Tick(object sender, EventArgs e)

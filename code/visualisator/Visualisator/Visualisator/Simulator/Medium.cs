@@ -19,12 +19,20 @@ namespace Visualisator
         {
             private String _band;
             private Int32 _channel;
+            private String _Destination;
             public Key(String band, Int32 Channel)
             {
                 _band = band;
                 _channel = Channel;
             }
+            public Key(String band, Int32 Channel,String dest)
+            {
+                _band = band;
+                _channel = Channel;
+                _Destination = dest;
+            }
         }
+
         [Serializable()]
         class PacketKey
         {
@@ -49,12 +57,12 @@ namespace Visualisator
         private Int32 _ConnectAckCounter = 0;
 
         private Double _Radius = 50;
-
+        private ArrayList BandAChannels = new ArrayList();
         private Hashtable _packets = new Hashtable(new ByteArrayComparer());
         private Hashtable _T = new Hashtable(new ByteArrayComparer()) ;
         private ArrayList _B = new ArrayList();
 
-
+        private StringBuilder _LOG = new StringBuilder();
         //*********************************************************************
         public Boolean Registration(String Band, Int32 Channel, Double x, Double y)
         {
@@ -103,10 +111,18 @@ namespace Visualisator
                     newThread.Start();
                 }
             }
-            catch (Exception) { return false; }
+            catch (Exception ex) {
+                AddToLog("[Registration] Exception:" + ex.Message);
+                return false; 
+            }
             return (true);
         }
+        //*********************************************************************
 
+        private void AddToLog(String data){
+
+            _LOG.Append(data + "\r\n");
+        }
         //*********************************************************************
         private void Unregister(Key Tk,object rem)
         {
@@ -123,7 +139,11 @@ namespace Visualisator
                        _T.Remove(Tk);
                }
            }
-           catch (Exception){ }
+           catch (Exception ex) { 
+               Console.WriteLine("Unregister:" + ex.Message);
+               AddToLog("Unregister:" + ex.Message);
+           
+           }
         }
 
         //*********************************************************************
@@ -150,22 +170,76 @@ namespace Visualisator
             ret += ObjectDumper.Dump(_Mfrequency);
             ret += "_MBands\r\n";
             ret += ObjectDumper.Dump(_MBands);
-
+            ret += "_LOG\r\n";
+            ret += ObjectDumper.Dump(_LOG.ToString());
             return (ret);
+        }
+
+
+        public ArrayList getBandAChannels()
+        {
+            return BandAChannels;
         }
         //*********************************************************************
         public Medium(){
+
+            AddToLog("Load Band.");
             _MBands.Add("G");
             _MBands.Add("N");
             _MBands.Add("A");
-
+            AddToLog("Load frequency.");
             _Mfrequency.Add(2400);
             _Mfrequency.Add(5000);
-
+            AddToLog("Load channels.");
             for (int i = 1; i < 15; i++)
             {
                 _MChannels.Add(i);
             }
+
+
+            BandAChannels.Add(183);
+            BandAChannels.Add(184);
+            BandAChannels.Add(185);
+            BandAChannels.Add(187);
+            BandAChannels.Add(188);
+            BandAChannels.Add(189);
+            BandAChannels.Add(192);
+            BandAChannels.Add(196);
+            BandAChannels.Add(7);
+            BandAChannels.Add(8);
+            BandAChannels.Add(9);
+            BandAChannels.Add(11);
+            BandAChannels.Add(12);
+            BandAChannels.Add(16);
+            BandAChannels.Add(34);
+            BandAChannels.Add(36);
+            BandAChannels.Add(38);
+            BandAChannels.Add(40);
+            BandAChannels.Add(42);
+            BandAChannels.Add(44);
+            BandAChannels.Add(46);
+            BandAChannels.Add(48);
+            BandAChannels.Add(52);
+            BandAChannels.Add(56);
+            BandAChannels.Add(60);
+            BandAChannels.Add(64);
+            BandAChannels.Add(100);
+            BandAChannels.Add(104);
+            BandAChannels.Add(108);
+            BandAChannels.Add(112);
+            BandAChannels.Add(116);
+            BandAChannels.Add(120);
+            BandAChannels.Add(124);
+            BandAChannels.Add(128);
+            BandAChannels.Add(132);
+            BandAChannels.Add(136);
+            BandAChannels.Add(140);
+            BandAChannels.Add(149);
+            BandAChannels.Add(153);
+            BandAChannels.Add(157);
+            BandAChannels.Add(161);
+            BandAChannels.Add(165);
+            AddToLog("Enable Medium.");
             Enable();
         }
 
@@ -179,6 +253,7 @@ namespace Visualisator
         //*********************************************************************
         public void Disable()
         {
+            AddToLog("Disable Medium.");
             _mediumWork = false;
         }
         //*********************************************************************
@@ -192,8 +267,9 @@ namespace Visualisator
         //*********************************************************************
         public Boolean MediumHaveAIRWork(RFDevice device)
         {
-                Key Pk = new Key(device.getOperateBand(), device.getOperateChannel());
-                if (_packets != null && _packets.ContainsKey(Pk))
+                Key Pk = new Key(device.getOperateBand(), device.getOperateChannel(),device.getMACAddress());
+                Key Pk2 = new Key(device.getOperateBand(), device.getOperateChannel(), "FF:FF:FF:FF:FF:FF");
+                if (_packets != null && (_packets.ContainsKey(Pk) || _packets.ContainsKey(Pk2)))
                     return true;
                 return false;
         }
@@ -210,7 +286,7 @@ namespace Visualisator
         //*********************************************************************
         public void SendData(SimulatorPacket pack)
         {
-            Key _Pk = new Key(pack.PacketBand, pack.PacketChannel);
+            Key _Pk = new Key(pack.PacketBand, pack.PacketChannel,pack.Destination);
             try
             {
                 if (pack != null)
@@ -252,13 +328,28 @@ namespace Visualisator
                 Thread newThread = new Thread(() => ThreadableSendData(_Pk,pack));
                 newThread.Start();
             }
-            catch (Exception) { }
+            catch (Exception ex) { AddToLog("[SendData] Exception:" + ex.Message); }
+        }
+
+        private static int GetObjectSize(object obj)
+        {
+            var bf = new BinaryFormatter();
+            var ms = new MemoryStream();
+            bf.Serialize(ms, obj);
+            int size = (int)ms.Length;
+            ms.Dispose();
+            return size;
         }
         //*********************************************************************
         private void ThreadableSendData(Key _Pk,object _ref)
         {
             ArrayList _temp = (ArrayList)_packets[_Pk];
-            Thread.Sleep(3);
+            SimulatorPacket p = (SimulatorPacket)_ref;
+            int Rate = p.getTransmitRate();
+            int sleep = GetObjectSize(p) / Rate;
+            //Thread.Sleep(sleep);
+            Thread.Sleep(new TimeSpan(sleep * 10));
+            AddToLog("Sleep for :" + sleep);
             if (_temp != null)
             {
                 lock (_packets)
@@ -283,7 +374,7 @@ namespace Visualisator
             {
                 if (_packets != null)
                 {
-                    Key Pk = new Key(device.getOperateBand(), device.getOperateChannel());
+                    Key Pk = new Key(device.getOperateBand(), device.getOperateChannel(),device.getMACAddress());
                     if (_packets.ContainsKey(Pk))
                     {
                         ArrayList LocalPackets = (ArrayList)_packets[Pk];
@@ -292,19 +383,11 @@ namespace Visualisator
                             if (pack != null)
                             {
                                 SimulatorPacket _LocalPack = (SimulatorPacket)pack;
-                                Boolean _BROADCAST = false;
-                                if (_LocalPack.Destination.Equals("FF:FF:FF:FF:FF:FF"))
-                                {
-                                    _BROADCAST = true;
-                                }
-
                                 if (_LocalPack.Source != device.getMACAddress() &&
-                                  (_LocalPack.Destination.Equals(device.getMACAddress()) || _BROADCAST) &&
+                                 
                                     getDistance(device.x, device.y, _LocalPack.X, _LocalPack.Y) < _Radius + _Radius)
                                 {
-
-                                    if (!_BROADCAST)
-                                        LocalPackets.Remove(pack);
+                                    LocalPackets.Remove(pack);
                                     return (_LocalPack);
                      
                                 }
@@ -312,9 +395,34 @@ namespace Visualisator
                             // loop body
                         }
                     }
+
+
+                    Pk = new Key(device.getOperateBand(), device.getOperateChannel(), "FF:FF:FF:FF:FF:FF");
+                    if (_packets.ContainsKey(Pk))
+                    {
+                        ArrayList LocalPackets = (ArrayList)_packets[Pk];
+                        foreach (object pack in LocalPackets)
+                        {
+                            if (pack != null)
+                            {
+                                SimulatorPacket _LocalPack = (SimulatorPacket)pack;
+
+                                if (_LocalPack.Source != device.getMACAddress() &&
+                                    getDistance(device.x, device.y, _LocalPack.X, _LocalPack.Y) < _Radius + _Radius)
+                                {
+                                    return (_LocalPack);
+                                }
+                            }
+                            // loop body
+                        }
+                    }
+                    else
+                    {
+                        AddToLog("Packet not found");
+                    }
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex) { AddToLog("[ReceiveData] Exception:" + ex.Message); }
             return (null);
         }
 

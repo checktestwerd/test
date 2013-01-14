@@ -10,7 +10,7 @@ namespace Visualisator.Packets
     {
 
         private Double _x;
-
+        private int _TransmitRate = 64;
         public Double X
         {
             get { return _x; }
@@ -53,8 +53,17 @@ namespace Visualisator.Packets
             this._Destination = "";
        //     this._FramControllFlags = "";
             this._MAX_SupportedRate = "64";
+            _TransmitRate = 64;
         }
 
+        public void setTransmitRate(int r)
+        {
+            _TransmitRate = r;
+        }
+        public int getTransmitRate()
+        {
+            return _TransmitRate;
+        }
         public SimulatorPacket()
         {
   

@@ -20,8 +20,8 @@ namespace Visualisator
         Graphics gr;
        // private AP[] _vert ;
        //S private STA[] _sta;
-        private Int32 STA_SIZE = 2;
-        private Int32 APs_SIZE = 2;
+        private Int32 STA_SIZE = 3;
+        private Int32 APs_SIZE = 10;
 
         private Int32 SelectedVertex = -1;
         private float SelectedX = 0;
@@ -76,6 +76,7 @@ namespace Visualisator
                 _sta.setOperateChannel(0);// (rand.Next(1, 14));       //  TODO delete this line
                 _sta.SetVertex(RandomC(_BOARDX), RandomC(_BOARDY), rand.NextDouble() * 500);
                 _objects.Add(_sta);
+                _sta.Scan();
             }
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -117,11 +118,6 @@ namespace Visualisator
                     if (_tsta.x >= e.X - _rad_size && _tsta.x <= e.X + _rad_size && _tsta.y >= e.Y - _rad_size && _tsta.y <= e.Y + _rad_size)
                     {
                         txtConsole.Text = "Station selected for view :" + i.ToString() + "\r\n" + txtConsole.Text;
-                      //  SelectedVertex = i;
-                      //  SelectedX = e.X;
-                       // SelectedY = e.Y;
-                     //   SelectedZ = e.X + e.Y;
-                   //     _ob = SelectedObjectType.STA;
                         StationInfo staForm = new StationInfo(_tsta);
                         
                         staForm.Show();

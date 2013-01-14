@@ -156,13 +156,19 @@ namespace Visualisator
         //*********************************************************************
         public void SendData(SimulatorPacket PacketToSend)
         {
+            Random ran = new Random((int)DateTime.Now.Ticks);
             while(RF_STATUS != "NONE")
-                Thread.Sleep(3);
+                Thread.Sleep(ran.Next(1, 3));
       
             RF_STATUS = "TX";
             while (!_MEDIUM.Registration(this.getOperateBand(), this.getOperateChannel(), this.x, this.y))
-                Thread.Sleep(2);
-           
+            {
+                RF_STATUS = "NONE";
+                Thread.Sleep(ran.Next(1, 3));
+                while (RF_STATUS != "NONE")
+                    Thread.Sleep(ran.Next(1, 3));
+                RF_STATUS = "TX";
+            }
             _MEDIUM.SendData(PacketToSend);
             RF_STATUS = "NONE";
             Thread.Sleep(3);
@@ -196,20 +202,24 @@ namespace Visualisator
         //*********************************************************************
         public void Scan()
         {
+            Thread newThread = new Thread(new ThreadStart(ThreadableScan));
+            newThread.Start();
 
+        }
+
+        public void ThreadableScan()
+        {
             _AccessPoint.Clear();
             _AccessPointTimeCounter.Clear();
 
             Int32 perv_channel = this.getOperateChannel();
+            String prev_band = this.getOperateBand();
+
+            setOperateBand("N");
             for (int i = 1; i < 15; i++)
             {
                 setOperateChannel(i);
-                Thread.Sleep(20);
-            }
-            for (int i = 1; i < 15; i++)
-            {
-                setOperateChannel(i);
-                Thread.Sleep(29);
+                Thread.Sleep(100);
             }
             for (int i = 1; i < 15; i++)
             {
@@ -217,7 +227,15 @@ namespace Visualisator
                 Thread.Sleep(400);
             }
 
+            ArrayList Achannels = _MEDIUM.getBandAChannels();
+            setOperateBand("N");
+            foreach (int i in Achannels)
+            {
+                setOperateChannel(i);
+                Thread.Sleep(400);
+            }
             setOperateChannel(perv_channel);
+            setOperateBand(prev_band);
         }
 
         //*********************************************************************
