@@ -7,21 +7,10 @@ using System.Reflection;
 namespace Visualisator.Packets
 {
     [Serializable()]
-    class Data : SimulatorPacket, IPacket, ISerializable
+    class ConnectionACK : SimulatorPacket, IPacket, ISerializable
     {
-                        // TODO check if this work corectlly
-
-        private String _data = "";
-
-        public void setData(String data){
-            _data = data;
-        }
-
-        public String getData()
-        {
-            return _data;
-        }
-        public Data(SimulatorPacket pack)
+                // TODO check if this work corectlly
+        public ConnectionACK(SimulatorPacket pack)
         {
             Type t = typeof(SimulatorPacket);
             PropertyInfo[] properties = t.GetProperties();
@@ -31,4 +20,7 @@ namespace Visualisator.Packets
             }
         }
     }
+
+    
+
 }

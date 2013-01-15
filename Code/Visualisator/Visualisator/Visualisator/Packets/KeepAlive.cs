@@ -7,21 +7,10 @@ using System.Reflection;
 namespace Visualisator.Packets
 {
     [Serializable()]
-    class Data : SimulatorPacket, IPacket, ISerializable
+    class KeepAlive : SimulatorPacket, IPacket, ISerializable
     {
                         // TODO check if this work corectlly
-
-        private String _data = "";
-
-        public void setData(String data){
-            _data = data;
-        }
-
-        public String getData()
-        {
-            return _data;
-        }
-        public Data(SimulatorPacket pack)
+        public KeepAlive(SimulatorPacket pack)
         {
             Type t = typeof(SimulatorPacket);
             PropertyInfo[] properties = t.GetProperties();

@@ -7,28 +7,24 @@ using System.Reflection;
 namespace Visualisator.Packets
 {
     [Serializable()]
-    class Data : SimulatorPacket, IPacket, ISerializable
+    class Beacon :SimulatorPacket, IPacket,ISerializable
     {
-                        // TODO check if this work corectlly
 
-        private String _data = "";
-
-        public void setData(String data){
-            _data = data;
-        }
-
-        public String getData()
+        public Beacon(Int32 Channel, String Band)
         {
-            return _data;
+
+
         }
-        public Data(SimulatorPacket pack)
+
+        // TODO check if this work corectlly
+        public Beacon(SimulatorPacket pack)
         {
             Type t = typeof(SimulatorPacket);
             PropertyInfo[] properties = t.GetProperties();
             foreach (PropertyInfo pi in properties)
             {
                 pi.SetValue(this, pi.GetValue(pack, null), null);
-            }
+            }    
         }
     }
 }
