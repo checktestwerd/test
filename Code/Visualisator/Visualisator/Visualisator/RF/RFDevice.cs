@@ -23,8 +23,7 @@ namespace Visualisator
         private Int32           _OperateChannel =   0;
         private String          _OperateBand    =   "";
         private MAC             _address        =   new MAC();
-        protected ArrayList _AccessPoint = new ArrayList();
-        protected Hashtable _AccessPointTimeCounter = new Hashtable(new ByteArrayComparer());
+
         protected ArrayList _AssociatedWithAPList = new ArrayList();
         protected ArrayList _PointerToAllRfDevices = null;
 
