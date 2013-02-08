@@ -8,7 +8,9 @@ namespace Visualisator.Packets
     [Serializable()]
     class SimulatorPacket:ISerializable,IPacket
     {
-
+        private String _Reciver = "00:33:33:22:11:fa";
+        private String _Destination = "FF:FF:FF:FF:FF:FF";
+        private String _Source = "AA:AA:AA:AA:AA:AA";
         private Double _x;
         private int _TransmitRate = 64;
         public Double X
@@ -117,7 +119,6 @@ namespace Visualisator.Packets
             get { return _Duration; }
             set { _Duration = value; }
         }
-        private String _Reciver = "00:33:33:22:11:fa";
 
         public String Reciver
         {
@@ -125,14 +126,14 @@ namespace Visualisator.Packets
             set { _Reciver = value; }
         }
 
-        private String _Destination = "FF:FF:FF:FF:FF:FF";
+ 
 
         public String Destination
         {
             get { return _Destination; }
             set { _Destination = value; }
         }
-        private String _Source = "AA:AA:AA:AA:AA:AA";
+
 
         public String Source
         {

@@ -424,7 +424,7 @@ namespace Visualisator
                     }
                     else
                     {
-                        AddToLog("Packet not found");
+                        //AddToLog("Packet not found");
                     }
                 }
             }

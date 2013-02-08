@@ -11,7 +11,7 @@ namespace Visualisator
 {
     [Serializable()]
     class RFDevice: ISerializable,IRFDevice
-    {
+    { 
         public  String RF_STATUS = "NONE";
         protected Medium _MEDIUM = null;
         protected Boolean _Enabled = true;
@@ -23,11 +23,32 @@ namespace Visualisator
         private Int32           _OperateChannel =   0;
         private String          _OperateBand    =   "";
         private MAC             _address        =   new MAC();
-        protected ArrayList _AccessPoint = new ArrayList();
-        protected Hashtable _AccessPointTimeCounter = new Hashtable(new ByteArrayComparer());
+
         protected ArrayList _AssociatedWithAPList = new ArrayList();
         protected ArrayList _PointerToAllRfDevices = null;
 
+
+        protected Int32 _DataReceived = 0;
+        protected Int32 _DataSent = 0;
+
+        protected Int32 DataSent
+        {
+            get { return _DataSent; }
+            set { _DataSent = value; }
+        }
+        protected Int32 DataReceived
+        {
+            get { return _DataReceived; }
+            set { _DataReceived = value; }
+        }
+
+        public Int32 getDataRecieved(){
+            return DataReceived;
+        }
+        public Int32 getDataSent()
+        {
+            return DataSent;
+        }
         public string DumpAll()
         {
             String ret = "";

@@ -55,6 +55,7 @@
     <Compile Include="Packets\Data.cs" />
     <Compile Include="Packets\DataAck.cs" />
     <Compile Include="Packets\KeepAlive.cs" />
+    <Compile Include="Simulator\ArrayListCounted.cs" />
     <Compile Include="Simulator\ByteArrayComparer.cs" />
     <Compile Include="Packets\Connect.cs" />
     <Compile Include="Packets\ConnectionACK.cs" />

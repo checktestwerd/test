@@ -35,6 +35,7 @@ namespace Visualisator
             lblBand.Text = _ap.getOperateBand();
             lblSSID.Text = _ap.SSID;
             lblConnectedSTA.Text = _ap.CenntedDevicesCount().ToString();
+            lblKeepAliveReceived.Text = _ap.KeepAliveReceived.ToString();
         }
     }
 }

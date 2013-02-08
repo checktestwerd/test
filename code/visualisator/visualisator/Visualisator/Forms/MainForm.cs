@@ -43,6 +43,7 @@ namespace Visualisator
         };
 
         private SelectedObjectType _ob;
+        private Color BoardColor = Color.Black;
 
 
         public MainForm()
@@ -248,7 +249,7 @@ namespace Visualisator
                 PictureBox picbox = (PictureBox)sender;
                 Graphics g = picbox.CreateGraphics();
                 g.DrawImage((Image)e.Data.GetData(DataFormats.Bitmap), new Point(0, 0));
-                ConsolePrint("pictureBox_DragDrop success");
+                //ConsolePrint("pictureBox_DragDrop success");
             }
             catch (Exception)
             {
@@ -262,11 +263,11 @@ namespace Visualisator
         private void DrowOnBoard()
         {
 
-            ConsolePrint("Start drawing");
+            //ConsolePrint("Start drawing");
             try
             {
                 refr();
-                ConsolePrint("Drawing success");
+                //ConsolePrint("Drawing success");
             }
             catch (Exception)
             {
@@ -281,7 +282,7 @@ namespace Visualisator
         
         public void refr()
         {
-            gr.Clear(Color.Black);
+            gr.Clear(BoardColor);
 
 
             for (int i = 0; i < _objects.Count; i++)

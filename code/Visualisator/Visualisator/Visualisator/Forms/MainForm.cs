@@ -21,14 +21,14 @@ namespace Visualisator
        // private AP[] _vert ;
        //S private STA[] _sta;
         private Int32 STA_SIZE = 3;
-        private Int32 APs_SIZE = 10;
+        private Int32 APs_SIZE = 2;
 
         private Int32 SelectedVertex = -1;
         private float SelectedX = 0;
         private float SelectedY = 0;
         private float SelectedZ = 0;
 
-        private ArrayList _objects = new ArrayList();
+        public ArrayList _objects = new ArrayList();
 
         private Medium _MEDIUM = new Medium();
         private Int32 _RADIUS = 50;
@@ -43,6 +43,7 @@ namespace Visualisator
         };
 
         private SelectedObjectType _ob;
+        private Color BoardColor = Color.Black;
 
 
         public MainForm()
@@ -78,6 +79,8 @@ namespace Visualisator
                 _objects.Add(_sta);
                 _sta.Scan();
             }
+
+            _MEDIUM.setMediumObj(_objects);
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -246,7 +249,7 @@ namespace Visualisator
                 PictureBox picbox = (PictureBox)sender;
                 Graphics g = picbox.CreateGraphics();
                 g.DrawImage((Image)e.Data.GetData(DataFormats.Bitmap), new Point(0, 0));
-                ConsolePrint("pictureBox_DragDrop success");
+                //ConsolePrint("pictureBox_DragDrop success");
             }
             catch (Exception)
             {
@@ -260,11 +263,11 @@ namespace Visualisator
         private void DrowOnBoard()
         {
 
-            ConsolePrint("Start drawing");
+            //ConsolePrint("Start drawing");
             try
             {
                 refr();
-                ConsolePrint("Drawing success");
+                //ConsolePrint("Drawing success");
             }
             catch (Exception)
             {
@@ -279,7 +282,7 @@ namespace Visualisator
         
         public void refr()
         {
-            gr.Clear(Color.Black);
+            gr.Clear(BoardColor);
 
 
             for (int i = 0; i < _objects.Count; i++)
@@ -475,6 +478,11 @@ namespace Visualisator
 
             gr = Graphics.FromImage(bm);
             */
+        }
+
+        private void tmrGUISlow_Tick(object sender, EventArgs e)
+        {
+            DrowOnBoard();
         }
 
 

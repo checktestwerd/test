@@ -6,12 +6,18 @@ using System.Drawing;
 using System.Threading;
 using System.Collections;
 using Visualisator.Packets;
+using System.Windows.Forms;
 
 namespace Visualisator
 {
     [Serializable()]
     class STA : RFDevice, IBoardObjects, ISerializable,IRFDevice
     {
+
+        protected ArrayListCounted _AccessPoint = new ArrayListCounted();
+        //protected Hashtable _AccessPointTimeCounter = new Hashtable(new ByteArrayComparer());
+
+        private Boolean _scanning = false;
 
        /* public STA(Medium med)
         {
@@ -40,15 +46,47 @@ namespace Visualisator
             _Enabled = true;
             Thread newThread = new Thread(new ThreadStart(Listen));
             newThread.Start();
+
+            Thread newThreadKeepAl = new Thread(new ThreadStart(SendKeepAlive));
+            newThreadKeepAl.Start();
             /*
             Thread newThreadSTACleaner = new Thread(new ThreadStart(STACleaner));
             newThreadSTACleaner.Start();
              * */
         }
 
+        private void SendKeepAlive()
+        {
+            while (_Enabled)
+            {
+
+                if (!getAssociatedAP_SSID().Equals(""))
+                {
+                    KeepAlive keepAl = new KeepAlive(CreatePacket());
+                    AP _connecttoAP = GetAPBySSID(_AccessPoint[0].ToString());
+                    Data dataPack = new Data(CreatePacket());
+
+                    keepAl.SSID = _connecttoAP.SSID;
+                    keepAl.Destination = _connecttoAP.getMACAddress();
+                    keepAl.PacketChannel = this.getOperateChannel();
+                    keepAl.PacketBand = this.getOperateBand();
+                    keepAl.Reciver = _connecttoAP.getMACAddress();
+                    SendData(keepAl);
+                    Thread.Sleep(5000);
+                }
+                else
+                {
+                    Thread.Sleep(10000);
+                }
+                
+ 
+            }
+        }
         //*********************************************************************
         private void ThreadableConnectToAP(String SSID, Connect _conn, AP _connecttoAP)
         {
+
+            bool connectSuccess = false;
             _AssociatedWithAPList.Clear();
             Int32 tRYStOcONNECT = 0;
             _conn.SSID = _connecttoAP.SSID;
@@ -58,12 +96,39 @@ namespace Visualisator
             _conn.Reciver = _connecttoAP.getMACAddress();
             this.setOperateChannel(_connecttoAP.getOperateChannel());
             this.setOperateBand(_connecttoAP.getOperateBand());
-            while (!_AssociatedWithAPList.Contains(SSID) && tRYStOcONNECT < 10)
+            while (!connectSuccess )
             {
-                SendData(_conn);
-                tRYStOcONNECT++;
-                Thread.Sleep(500);
+                if (!_AssociatedWithAPList.Contains(SSID))
+                {
+                    if (tRYStOcONNECT < 10)
+                    {
+                        SendData(_conn);
+                        tRYStOcONNECT++;
+                        Thread.Sleep(500);
+
+                    }
+
+                }
+                else
+                {
+                    connectSuccess = true;
+                }
             }
+            if (connectSuccess && _scanning)
+            {
+
+          
+                SpinWait.SpinUntil
+                (() =>
+                    {
+
+                        return (bool)!_scanning;
+                    }
+                );
+                this.setOperateChannel(_connecttoAP.getOperateChannel());
+                this.setOperateBand(_connecttoAP.getOperateBand());
+            }
+            //  Fix Work Channel under scan
         }
 
         //*********************************************************************
@@ -122,6 +187,7 @@ namespace Visualisator
                     ParseReceivedPacket(pack);
 
                 Thread.Sleep(2);
+                //Thread.Sleep(new TimeSpan(10));
             }
         }
 
@@ -135,6 +201,7 @@ namespace Visualisator
                 if (!_AssociatedWithAPList.Contains(_ack.SSID))
                 {
                     _AssociatedWithAPList.Add(_ack.SSID);
+
                     Thread.Sleep(5);
                 }
             }
@@ -145,13 +212,17 @@ namespace Visualisator
                 {
                     _AccessPoint.Add(bec.SSID);
                 }
+                _AccessPoint.Increase(bec.SSID);
                 Thread.Sleep(2);
             }
 
             else if (_Pt == typeof(Packets.Data))
             {
+                Packets.Data dat = (Packets.Data)pack;
 
+                
                 //Thread.Sleep(2);
+
                 _DataReceived++;
             }
             else
@@ -176,6 +247,12 @@ namespace Visualisator
                 while (RF_STATUS != "NONE")
                     Thread.Sleep(ran.Next(1, 3));
                 RF_STATUS = "TX";
+            }
+             
+            // Now scanning process running
+            if (_scanning)
+            {
+                SpinWait.SpinUntil (() => { return (bool)!_scanning;} );
             }
             _MEDIUM.SendData(PacketToSend);
             
@@ -253,24 +330,50 @@ namespace Visualisator
 
         }
 
+        private void ScanOneChannel(int chann, int TimeForListen, String Band)
+        {
+            Int32 perv_channel = this.getOperateChannel();
+            String prev_band = this.getOperateBand();
+
+            setOperateBand(Band);
+            _scanning = true;
+            setOperateChannel(chann);
+            Thread.Sleep(TimeForListen);
+            if (this.getOperateChannel() != chann)
+            {
+                //  Scan on this channel was desturbed
+                //  Try again
+                _scanning = false;
+                ScanOneChannel(chann, TimeForListen, Band);
+            }
+            else
+            {
+                //  Scan on this channel success
+                //  Return back work parameters
+                setOperateChannel(perv_channel);
+                setOperateBand(prev_band);
+                _scanning = false;
+            }
+            Thread.Sleep(3);
+
+        }
         public void ThreadableScan()
         {
-            _AccessPoint.Clear();
-            _AccessPointTimeCounter.Clear();
+            //_AccessPoint.Clear();
+            _AccessPoint.DecreaseAll();
+            //_AccessPointTimeCounter.Clear();
 
             Int32 perv_channel = this.getOperateChannel();
             String prev_band = this.getOperateBand();
 
-            setOperateBand("N");
+            
             for (int i = 1; i < 15; i++)
             {
-                setOperateChannel(i);
-                Thread.Sleep(100);
+                ScanOneChannel(i, 100, "N");
             }
             for (int i = 1; i < 15; i++)
             {
-                setOperateChannel(i);
-                Thread.Sleep(400);
+                ScanOneChannel(i, 400, "N");
             }
             /*
             ArrayList Achannels = _MEDIUM.getBandAChannels();
@@ -280,8 +383,7 @@ namespace Visualisator
                 setOperateChannel(i);
                 Thread.Sleep(400);
             }*/
-            setOperateChannel(perv_channel);
-            setOperateBand(prev_band);
+
         }
 
         //*********************************************************************
