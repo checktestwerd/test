@@ -126,7 +126,7 @@ namespace Visualisator
         //*********************************************************************
         private void Unregister(Key Tk,object rem)
         {
-           Thread.Sleep(3);
+           Thread.Sleep(1);
            ArrayList _temp = (ArrayList)_T[Tk];
            try
            {
@@ -393,7 +393,7 @@ namespace Visualisator
                                  
                                     getDistance(device.x, device.y, _LocalPack.X, _LocalPack.Y) < _Radius + _Radius)
                                 {
-                                    LocalPackets.Remove(pack);
+                                    //LocalPackets.Remove(pack);
                                     return (_LocalPack);
                      
                                 }

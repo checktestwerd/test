@@ -63,7 +63,7 @@
             this.txtConsole.Multiline = true;
             this.txtConsole.Name = "txtConsole";
             this.txtConsole.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtConsole.Size = new System.Drawing.Size(331, 577);
+            this.txtConsole.Size = new System.Drawing.Size(331, 295);
             this.txtConsole.TabIndex = 1;
             this.txtConsole.TextChanged += new System.EventHandler(this.txtConsole_TextChanged);
             // 
@@ -162,7 +162,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(952, 661);
+            this.ClientSize = new System.Drawing.Size(952, 386);
             this.Controls.Add(this.btnShowMediumInfo);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);

@@ -35,7 +35,7 @@ namespace Visualisator
 
         static Random rand = new Random();
         private Int32 _BOARDX = 600;
-        private Int32 _BOARDY = 640;
+        private Int32 _BOARDY = 340;
         private enum SelectedObjectType
         {
             STA,

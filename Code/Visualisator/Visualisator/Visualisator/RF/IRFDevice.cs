@@ -23,5 +23,6 @@ namespace Visualisator
         void AddToLog(String newLogEntry);
         String DumpAll();
         void ParseReceivedPacket(IPacket pack);
+
     }
 }

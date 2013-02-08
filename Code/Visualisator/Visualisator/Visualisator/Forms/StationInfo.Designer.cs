@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cmdReset = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.lblSent = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,13 +50,16 @@
             this.btnDumpAll = new System.Windows.Forms.Button();
             this.txtDumpAll = new System.Windows.Forms.TextBox();
             this.tmrGUI = new System.Windows.Forms.Timer(this.components);
-            this.cmdReset = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lblAckReceived = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.lblAckReceived);
             this.groupBox1.Controls.Add(this.cmdReset);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.lblSent);
@@ -79,6 +83,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cennect Info";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // cmdReset
+            // 
+            this.cmdReset.Location = new System.Drawing.Point(232, 44);
+            this.cmdReset.Name = "cmdReset";
+            this.cmdReset.Size = new System.Drawing.Size(53, 22);
+            this.cmdReset.TabIndex = 16;
+            this.cmdReset.Text = "Reset";
+            this.cmdReset.UseVisualStyleBackColor = true;
+            this.cmdReset.Click += new System.EventHandler(this.cmdReset_Click);
             // 
             // label3
             // 
@@ -257,15 +271,23 @@
             this.tmrGUI.Interval = 20;
             this.tmrGUI.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // cmdReset
+            // label4
             // 
-            this.cmdReset.Location = new System.Drawing.Point(332, 73);
-            this.cmdReset.Name = "cmdReset";
-            this.cmdReset.Size = new System.Drawing.Size(53, 22);
-            this.cmdReset.TabIndex = 16;
-            this.cmdReset.Text = "Reset";
-            this.cmdReset.UseVisualStyleBackColor = true;
-            this.cmdReset.Click += new System.EventHandler(this.cmdReset_Click);
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(394, 69);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(75, 13);
+            this.label4.TabIndex = 18;
+            this.label4.Text = "Ack Received";
+            // 
+            // lblAckReceived
+            // 
+            this.lblAckReceived.AutoSize = true;
+            this.lblAckReceived.Location = new System.Drawing.Point(495, 69);
+            this.lblAckReceived.Name = "lblAckReceived";
+            this.lblAckReceived.Size = new System.Drawing.Size(35, 13);
+            this.lblAckReceived.TabIndex = 17;
+            this.lblAckReceived.Text = "label2";
             // 
             // StationInfo
             // 
@@ -308,5 +330,7 @@
         private System.Windows.Forms.Label lblSent;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button cmdReset;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblAckReceived;
     }
 }

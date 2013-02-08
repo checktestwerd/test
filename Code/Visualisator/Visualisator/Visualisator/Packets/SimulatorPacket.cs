@@ -13,6 +13,13 @@ namespace Visualisator.Packets
         private String _Source = "AA:AA:AA:AA:AA:AA";
         private Double _x;
         private int _TransmitRate = 64;
+        private int _PacketID = 0;
+
+        public int PacketID
+        {
+            get { return _PacketID; }
+            set { _PacketID = value; }
+        }
         public Double X
         {
             get { return _x; }

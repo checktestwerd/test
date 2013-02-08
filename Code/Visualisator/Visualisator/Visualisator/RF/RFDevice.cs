@@ -29,6 +29,7 @@ namespace Visualisator
 
 
         protected Int32 _DataReceived = 0;
+        protected Int32 _DataAckReceived = 0;
         protected Int32 _DataSent = 0;
 
         protected Int32 DataSent
@@ -41,9 +42,17 @@ namespace Visualisator
             get { return _DataReceived; }
             set { _DataReceived = value; }
         }
-
+        protected Int32 DataAckReceived
+        {
+            get { return _DataAckReceived; }
+            set { _DataAckReceived = value; }
+        }
         public Int32 getDataRecieved(){
             return DataReceived;
+        }
+        public Int32 getDataAckRecieved()
+        {
+            return DataAckReceived;
         }
         public Int32 getDataSent()
         {
@@ -135,7 +144,10 @@ namespace Visualisator
             return (_OperateBand);
         }
 
-
+        protected bool RF_Ready()
+        {
+            return RF_STATUS.Equals("NONE");
+        }
 
         public void Enable()
         {

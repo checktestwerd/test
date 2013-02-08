@@ -87,6 +87,7 @@ namespace Visualisator
             txtDataReceeived.Text = _sta.getDataRecieved().ToString();
             lblSent.Text = _sta.getDataSent().ToString();
             lblAssociatedAP.Text =  _sta.getAssociatedAP_SSID();
+            lblAckReceived.Text = _sta.getDataAckRecieved().ToString();
         }
 
         private void btnConnectToBSS_Click(object sender, EventArgs e)

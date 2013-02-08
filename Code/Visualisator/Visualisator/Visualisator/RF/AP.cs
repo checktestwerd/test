@@ -13,7 +13,7 @@ namespace Visualisator
     [Serializable()]
     class AP :  RFDevice, IBoardObjects,IRFDevice,ISerializable
     {
-        const int _UPDATE_KEEP_ALIVE_PERIOD = 5; //sec
+        const int _UPDATE_KEEP_ALIVE_PERIOD = 15; //sec
         
         private Int32 _BeaconPeriod = 500;
 
@@ -131,22 +131,24 @@ namespace Visualisator
         {
 
             Random ran = new Random((int)DateTime.Now.Ticks);
-            while (RF_STATUS != "NONE")
-            {
-                Thread.Sleep(ran.Next(3,10));
-            }
+            //while (RF_STATUS != "NONE")
+            //{
+                //Thread.Sleep(ran.Next(3,10));
+            //}
+            SpinWait.SpinUntil(RF_Ready);
             RF_STATUS = "TX";
             while (!_MEDIUM.Registration(this.getOperateBand(),this.getOperateChannel(),this.x,this.y))
             {
                 RF_STATUS = "NONE";
-                Thread.Sleep(ran.Next(2, 4));
-                while (RF_STATUS != "NONE")
-                    Thread.Sleep(ran.Next(1, 3));
+                //Thread.Sleep(ran.Next(2, 4));
+                SpinWait.SpinUntil(RF_Ready);
+                //while (RF_STATUS != "NONE")
+                //    Thread.Sleep(ran.Next(1, 3));
                 RF_STATUS = "TX";
             }
             _MEDIUM.SendData(pack);
             RF_STATUS = "NONE";
-            Thread.Sleep(ran.Next(5, 15));
+            Thread.Sleep(ran.Next(1, 2));
     
         }
         //*********************************************************************
@@ -162,17 +164,18 @@ namespace Visualisator
             {
                 Packets.IPacket pack = null;
                 Random ran = new Random((int)DateTime.Now.Ticks);
-                while (RF_STATUS != "NONE")
-                {
-                    Thread.Sleep(ran.Next(1,4));
-                }
-                lock (RF_STATUS)
-                {
+                //while (RF_STATUS != "NONE")
+                //{
+                //    Thread.Sleep(ran.Next(1,4));
+               // }
+                SpinWait.SpinUntil(RF_Ready);
+                //lock (RF_STATUS)
+                //{
                     RF_STATUS = "RX";
                     if (_MEDIUM.MediumHaveAIRWork(this))
                         pack = _MEDIUM.ReceiveData(this);
                     RF_STATUS = "NONE";
-                }
+               // }
                 if (pack != null)
                     ParseReceivedPacket(pack);
 
@@ -184,6 +187,7 @@ namespace Visualisator
         {
             if (_AssociatedDevices.Contains(STA_MAC))
             {
+                _KeepAliveReceived++;
                 _AssociatedDevices.Increase(STA_MAC);
             }
             else
@@ -206,7 +210,7 @@ namespace Visualisator
             else if (Pt == typeof(KeepAlive))
             {
                 KeepAlive _wp   = (KeepAlive)pack;
-                _KeepAliveReceived++;
+     
 
                 Thread newThread = new Thread(() => UpdateSTAKeepAliveInfoOnReceive(_wp.Source));
                 newThread.Start();
@@ -214,6 +218,10 @@ namespace Visualisator
             else if (Pt == typeof(Data))
             {
                 Data _wp        = (Data)pack;
+                // Update Keep Alive
+                Thread newThread = new Thread(() => UpdateSTAKeepAliveInfoOnReceive(_wp.Source));
+                newThread.Start();
+
                 _wp.Destination = _wp.Reciver;
                 _wp.X = this.x;
                 _wp.Y = this.y;
@@ -222,7 +230,17 @@ namespace Visualisator
             }
             else if (Pt == typeof(DataAck))
             {
+
                 DataAck _wp     = (DataAck)pack;
+
+                // Update Keep Alive
+                //Thread newThread = new Thread(() => UpdateSTAKeepAliveInfoOnReceive(_wp.Source));
+                //newThread.Start();
+
+                _wp.Destination = _wp.Reciver;
+                _wp.X = this.x;
+                _wp.Y = this.y;
+                SendData(_wp);
             }
             else
             {

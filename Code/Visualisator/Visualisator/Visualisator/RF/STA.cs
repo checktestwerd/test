@@ -19,6 +19,10 @@ namespace Visualisator
 
         private Boolean _scanning = false;
 
+        private int PrevDataID = 0;
+        private int PrevDataAckID = 0;
+
+        private bool ackReceived = false;
        /* public STA(Medium med)
         {
             this._MEDIUM = med;
@@ -72,7 +76,7 @@ namespace Visualisator
                     keepAl.PacketBand = this.getOperateBand();
                     keepAl.Reciver = _connecttoAP.getMACAddress();
                     SendData(keepAl);
-                    Thread.Sleep(5000);
+                    Thread.Sleep(3000);
                 }
                 else
                 {
@@ -105,9 +109,7 @@ namespace Visualisator
                         SendData(_conn);
                         tRYStOcONNECT++;
                         Thread.Sleep(500);
-
                     }
-
                 }
                 else
                 {
@@ -171,10 +173,7 @@ namespace Visualisator
 
             while (_Enabled)
             {
-                while (RF_STATUS != "NONE")
-                {
-                    Thread.Sleep(1);
-                }
+                SpinWait.SpinUntil(RF_Ready);
                 lock (RF_STATUS)
                 {
                     RF_STATUS = "RX";
@@ -219,11 +218,42 @@ namespace Visualisator
             else if (_Pt == typeof(Packets.Data))
             {
                 Packets.Data dat = (Packets.Data)pack;
+                bool recieve = false;
 
-                
+                    if (dat.PacketID != PrevDataID)
+                    {
+                        recieve = true;
+                    }
+
+                if (recieve)
+                {
+
+
+                    _DataReceived++;
+                }
+
+                DataAck da = new DataAck(CreatePacket());
+                PrevDataID = dat.PacketID;
+                AP _connecttoAP = GetAPBySSID(_AccessPoint[0].ToString());
+                da.Destination = _connecttoAP.getMACAddress();
+                da.PacketChannel = this.getOperateChannel();
+                da.PacketBand = this.getOperateBand();
+                da.Reciver = dat.Source;
                 //Thread.Sleep(2);
+                da.PacketID = dat.PacketID;
+                SendData(da);   
+            }
+            else if (_Pt == typeof(Packets.DataAck))
+            {
+                Packets.DataAck dat = (Packets.DataAck)pack;
 
-                _DataReceived++;
+                    if (PrevDataAckID != dat.PacketID)
+                    {
+                        
+                        _DataAckReceived++;
+                    }
+                    ackReceived = true;
+                PrevDataAckID = dat.PacketID;
             }
             else
             {
@@ -236,16 +266,18 @@ namespace Visualisator
         public void SendData(SimulatorPacket PacketToSend)
         {
             Random ran = new Random((int)DateTime.Now.Ticks);
-            while(RF_STATUS != "NONE")
-                Thread.Sleep(ran.Next(1, 3));
+            SpinWait.SpinUntil(RF_Ready);
+           // while(RF_STATUS != "NONE")
+            //    Thread.Sleep(ran.Next(1, 3));
       
             RF_STATUS = "TX";
             while (!_MEDIUM.Registration(this.getOperateBand(), this.getOperateChannel(), this.x, this.y))
             {
                 RF_STATUS = "NONE";
-                Thread.Sleep(ran.Next(1, 3));
-                while (RF_STATUS != "NONE")
-                    Thread.Sleep(ran.Next(1, 3));
+                //Thread.Sleep(ran.Next(1, 3));
+                SpinWait.SpinUntil(RF_Ready);
+                //while (RF_STATUS != "NONE")
+                //    Thread.Sleep(ran.Next(1, 3));
                 RF_STATUS = "TX";
             }
              
@@ -257,7 +289,7 @@ namespace Visualisator
             _MEDIUM.SendData(PacketToSend);
             
             RF_STATUS = "NONE";
-            Thread.Sleep(3);
+            Thread.Sleep(2);
             if (PacketToSend.GetType() == typeof(Data))
             {
                 _DataSent++;
@@ -291,21 +323,37 @@ namespace Visualisator
         public void ThreadAbleReadFile(String fileName)
         {
             string[] lines = System.IO.File.ReadAllLines(@"C:\simulator\input.txt");
+            AP _connecttoAP = GetAPBySSID(_AccessPoint[0].ToString());
+            Data dataPack = new Data(CreatePacket());
+            dataPack.SSID = _connecttoAP.SSID;
+            dataPack.Destination = _connecttoAP.getMACAddress();
+            dataPack.PacketChannel = this.getOperateChannel();
+            dataPack.PacketBand = this.getOperateBand();
+            dataPack.Reciver = fileName;
             foreach (string line in lines)
             {
                 // Use a tab to indent each line of the file.
 
-                AP _connecttoAP = GetAPBySSID(_AccessPoint[0].ToString());
-                Data dataPack = new Data(CreatePacket());
-                dataPack.setData(line);
-                dataPack.SSID = _connecttoAP.SSID;
-                dataPack.Destination = _connecttoAP.getMACAddress();
-                dataPack.PacketChannel = this.getOperateChannel();
-                dataPack.PacketBand = this.getOperateBand();
-                dataPack.Reciver = fileName;
 
+                dataPack.setData(line);
+                dataPack.PacketID++;
+                
                 SendData(dataPack);
-                Console.WriteLine("\t" + line);
+                int retrCounter = 10;
+                while (!ackReceived )
+                {
+                    retrCounter--;
+                    Thread.Sleep(10);
+                    if (retrCounter < 0)
+                    {
+                        retrCounter = 10;
+                        SendData(dataPack);
+                    }
+                }
+                //SpinWait.SpinUntil(() => { return ackReceived; });
+                ackReceived = false;
+               // Thread.Sleep(3);
+                //Console.WriteLine("\t" + line);
             }
         }
         //*********************************************************************
