@@ -248,7 +248,7 @@ namespace Visualisator
                     Thread.Sleep(ran.Next(1, 3));
                 RF_STATUS = "TX";
             }
-
+             
             // Now scanning process running
             if (_scanning)
             {

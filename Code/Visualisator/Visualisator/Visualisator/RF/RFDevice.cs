@@ -11,7 +11,7 @@ namespace Visualisator
 {
     [Serializable()]
     class RFDevice: ISerializable,IRFDevice
-    {
+    { 
         public  String RF_STATUS = "NONE";
         protected Medium _MEDIUM = null;
         protected Boolean _Enabled = true;
