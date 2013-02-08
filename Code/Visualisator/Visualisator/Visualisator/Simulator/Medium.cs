@@ -46,8 +46,8 @@ namespace Visualisator
                 _type = _t;
             }
         }
-       
 
+        public ArrayList _objects = null;
         private ArrayList _MBands = new ArrayList();
         private ArrayList _Mfrequency = new ArrayList();
         private ArrayList _MChannels = new ArrayList();
@@ -172,6 +172,8 @@ namespace Visualisator
             ret += ObjectDumper.Dump(_MBands);
             ret += "_LOG\r\n";
             ret += ObjectDumper.Dump(_LOG.ToString());
+            ret += "STA\r\n";
+            ret += ObjectDumper.Dump(_objects);
             return (ret);
         }
 
@@ -180,6 +182,10 @@ namespace Visualisator
         {
             return BandAChannels;
         }
+
+                public void setMediumObj(ArrayList _obj){
+                     _objects = _obj;
+                }
         //*********************************************************************
         public Medium(){
 
@@ -348,8 +354,8 @@ namespace Visualisator
             int Rate = p.getTransmitRate();
             int sleep = GetObjectSize(p) / Rate;
             //Thread.Sleep(sleep);
-            Thread.Sleep(new TimeSpan(sleep * 10));
-            AddToLog("Sleep for :" + sleep);
+            Thread.Sleep(new TimeSpan(sleep * 1000));
+            //AddToLog("Sleep for :" + sleep);
             if (_temp != null)
             {
                 lock (_packets)
@@ -418,7 +424,7 @@ namespace Visualisator
                     }
                     else
                     {
-                        AddToLog("Packet not found");
+                        //AddToLog("Packet not found");
                     }
                 }
             }

@@ -28,6 +28,28 @@ namespace Visualisator
         protected ArrayList _AssociatedWithAPList = new ArrayList();
         protected ArrayList _PointerToAllRfDevices = null;
 
+
+        protected Int32 _DataReceived = 0;
+        protected Int32 _DataSent = 0;
+
+        protected Int32 DataSent
+        {
+            get { return _DataSent; }
+            set { _DataSent = value; }
+        }
+        protected Int32 DataReceived
+        {
+            get { return _DataReceived; }
+            set { _DataReceived = value; }
+        }
+
+        public Int32 getDataRecieved(){
+            return DataReceived;
+        }
+        public Int32 getDataSent()
+        {
+            return DataSent;
+        }
         public string DumpAll()
         {
             String ret = "";

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.txtConsole = new System.Windows.Forms.TextBox();
             this.btn_AddAP = new System.Windows.Forms.Button();
@@ -39,6 +40,7 @@
             this.openDLGOpenSimulationSettings = new System.Windows.Forms.OpenFileDialog();
             this.button4 = new System.Windows.Forms.Button();
             this.btnShowMediumInfo = new System.Windows.Forms.Button();
+            this.tmrGUISlow = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button1
@@ -150,6 +152,12 @@
             this.btnShowMediumInfo.UseVisualStyleBackColor = true;
             this.btnShowMediumInfo.Click += new System.EventHandler(this.btnShowMediumInfo_Click);
             // 
+            // tmrGUISlow
+            // 
+            this.tmrGUISlow.Enabled = true;
+            this.tmrGUISlow.Interval = 1000;
+            this.tmrGUISlow.Tick += new System.EventHandler(this.tmrGUISlow_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -190,6 +198,7 @@
         private System.Windows.Forms.OpenFileDialog openDLGOpenSimulationSettings;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button btnShowMediumInfo;
+        private System.Windows.Forms.Timer tmrGUISlow;
     }
 }
 

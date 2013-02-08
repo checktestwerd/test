@@ -40,12 +40,42 @@ namespace Visualisator
             _Enabled = true;
             Thread newThread = new Thread(new ThreadStart(Listen));
             newThread.Start();
+
+            Thread newThreadKeepAl = new Thread(new ThreadStart(SendKeepAlive));
+            newThreadKeepAl.Start();
             /*
             Thread newThreadSTACleaner = new Thread(new ThreadStart(STACleaner));
             newThreadSTACleaner.Start();
              * */
         }
 
+        private void SendKeepAlive()
+        {
+            while (_Enabled)
+            {
+
+                if (!getAssociatedAP_SSID().Equals(""))
+                {
+                    KeepAlive keepAl = new KeepAlive(CreatePacket());
+                    AP _connecttoAP = GetAPBySSID(_AccessPoint[0].ToString());
+                    Data dataPack = new Data(CreatePacket());
+
+                    keepAl.SSID = _connecttoAP.SSID;
+                    keepAl.Destination = _connecttoAP.getMACAddress();
+                    keepAl.PacketChannel = this.getOperateChannel();
+                    keepAl.PacketBand = this.getOperateBand();
+                    keepAl.Reciver = _connecttoAP.getMACAddress();
+                    SendData(keepAl);
+                    Thread.Sleep(5000);
+                }
+                else
+                {
+                    Thread.Sleep(10000);
+                }
+                
+ 
+            }
+        }
         //*********************************************************************
         private void ThreadableConnectToAP(String SSID, Connect _conn, AP _connecttoAP)
         {
@@ -55,6 +85,7 @@ namespace Visualisator
             _conn.Destination = _connecttoAP.getMACAddress();
             _conn.PacketChannel = _connecttoAP.getOperateChannel();
             _conn.PacketBand = _connecttoAP.getOperateBand();
+            _conn.Reciver = _connecttoAP.getMACAddress();
             this.setOperateChannel(_connecttoAP.getOperateChannel());
             this.setOperateBand(_connecttoAP.getOperateBand());
             while (!_AssociatedWithAPList.Contains(SSID) && tRYStOcONNECT < 10)
@@ -107,7 +138,7 @@ namespace Visualisator
             {
                 while (RF_STATUS != "NONE")
                 {
-                    Thread.Sleep(3);
+                    Thread.Sleep(1);
                 }
                 lock (RF_STATUS)
                 {
@@ -120,7 +151,8 @@ namespace Visualisator
                 if (pack != null)
                     ParseReceivedPacket(pack);
 
-                Thread.Sleep(3);
+                Thread.Sleep(2);
+                //Thread.Sleep(new TimeSpan(10));
             }
         }
 
@@ -146,6 +178,16 @@ namespace Visualisator
                 }
                 Thread.Sleep(2);
             }
+
+            else if (_Pt == typeof(Packets.Data))
+            {
+                Packets.Data dat = (Packets.Data)pack;
+
+                
+                //Thread.Sleep(2);
+
+                _DataReceived++;
+            }
             else
             {
                 //Console.WriteLine("[" + getMACAddress() + "]" + " listening.");
@@ -170,10 +212,20 @@ namespace Visualisator
                 RF_STATUS = "TX";
             }
             _MEDIUM.SendData(PacketToSend);
+            
             RF_STATUS = "NONE";
             Thread.Sleep(3);
+            if (PacketToSend.GetType() == typeof(Data))
+            {
+                _DataSent++;
+            }
         }
                 
+        public void ResetCounters()
+        {
+            _DataSent = 0;
+            _DataReceived = 0;
+        }
         //*********************************************************************
         public RFDevice GetRFDeviceByMAC(String _mac)
         {
@@ -184,6 +236,34 @@ namespace Visualisator
                     return (_tV);
             }
             return (null);
+        }
+
+        public void rfile(String fileName)
+        {
+
+            Thread newThread = new Thread(() => ThreadAbleReadFile(fileName));
+                newThread.Start();
+        }
+
+        public void ThreadAbleReadFile(String fileName)
+        {
+            string[] lines = System.IO.File.ReadAllLines(@"C:\simulator\input.txt");
+            foreach (string line in lines)
+            {
+                // Use a tab to indent each line of the file.
+
+                AP _connecttoAP = GetAPBySSID(_AccessPoint[0].ToString());
+                Data dataPack = new Data(CreatePacket());
+                dataPack.setData(line);
+                dataPack.SSID = _connecttoAP.SSID;
+                dataPack.Destination = _connecttoAP.getMACAddress();
+                dataPack.PacketChannel = this.getOperateChannel();
+                dataPack.PacketBand = this.getOperateBand();
+                dataPack.Reciver = fileName;
+
+                SendData(dataPack);
+                Console.WriteLine("\t" + line);
+            }
         }
         //*********************************************************************
         public AP GetAPBySSID(String _SSID)
@@ -226,14 +306,14 @@ namespace Visualisator
                 setOperateChannel(i);
                 Thread.Sleep(400);
             }
-
+            /*
             ArrayList Achannels = _MEDIUM.getBandAChannels();
             setOperateBand("N");
             foreach (int i in Achannels)
             {
                 setOperateChannel(i);
                 Thread.Sleep(400);
-            }
+            }*/
             setOperateChannel(perv_channel);
             setOperateBand(prev_band);
         }

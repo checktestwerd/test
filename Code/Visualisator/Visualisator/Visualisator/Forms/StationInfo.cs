@@ -27,6 +27,7 @@ namespace Visualisator
             lblMac.Text = _sta.getMACAddress();
             lblCoordinates.Text = "X:" + (int)_sta.x + " Y:" + (int)_sta.y; 
             PrintAPList();
+            txtMAC.Text = _sta.getMACAddress();
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -83,6 +84,8 @@ namespace Visualisator
             {
                 txtDumpAll.Text = _sta.DumpAll();
             }
+            txtDataReceeived.Text = _sta.getDataRecieved().ToString();
+            lblSent.Text = _sta.getDataSent().ToString();
             lblAssociatedAP.Text =  _sta.getAssociatedAP_SSID();
         }
 
@@ -101,6 +104,16 @@ namespace Visualisator
         private void txtDumpAll_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            _sta.rfile(txtDestination.Text);
+        }
+
+        private void cmdReset_Click(object sender, EventArgs e)
+        {
+            _sta.ResetCounters();
         }
     }
 }

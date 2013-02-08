@@ -40,6 +40,8 @@
             this.lblConnectedSTA = new System.Windows.Forms.Label();
             this.lblMAC = new System.Windows.Forms.Label();
             this.tbrGUISlow = new System.Windows.Forms.Timer(this.components);
+            this.lblKeepAliveReceived = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -139,11 +141,31 @@
             this.tbrGUISlow.Interval = 500;
             this.tbrGUISlow.Tick += new System.EventHandler(this.tbrGUISlow_Tick);
             // 
+            // lblKeepAliveReceived
+            // 
+            this.lblKeepAliveReceived.AutoSize = true;
+            this.lblKeepAliveReceived.Location = new System.Drawing.Point(191, 123);
+            this.lblKeepAliveReceived.Name = "lblKeepAliveReceived";
+            this.lblKeepAliveReceived.Size = new System.Drawing.Size(13, 13);
+            this.lblKeepAliveReceived.TabIndex = 11;
+            this.lblKeepAliveReceived.Text = "0";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(25, 123);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(104, 13);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "KeepAlive Recieved";
+            // 
             // APInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(501, 343);
+            this.Controls.Add(this.lblKeepAliveReceived);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.lblChannel);
             this.Controls.Add(this.lblBand);
             this.Controls.Add(this.lblSSID);
@@ -175,5 +197,7 @@
         private System.Windows.Forms.Label lblConnectedSTA;
         private System.Windows.Forms.Label lblMAC;
         private System.Windows.Forms.Timer tbrGUISlow;
+        private System.Windows.Forms.Label lblKeepAliveReceived;
+        private System.Windows.Forms.Label label7;
     }
 }

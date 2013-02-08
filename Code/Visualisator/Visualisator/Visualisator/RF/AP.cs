@@ -20,16 +20,23 @@ namespace Visualisator
         private Int32 _AP_MIN_SEND_PERIOD = 100;
         private static Random rnadomBeacon = new Random();
         private String _SSID = "";
+        private ArrayList _AssociatedDevices = new ArrayList();
+
+        private Int32 _KeepAliveReceived = 0;
+
+
+        private static Random random = new Random((int)DateTime.Now.Ticks);//thanks to McAden
 
         public String SSID
         {
             get { return _SSID; }
             set { _SSID = value; }
         }
-        private ArrayList _AssociatedDevices = new ArrayList();
-
-
-        private static Random random = new Random((int)DateTime.Now.Ticks);//thanks to McAden
+        public Int32 KeepAliveReceived
+        {
+            get { return _KeepAliveReceived; }
+            set { _KeepAliveReceived = value; }
+        }
 
         //*********************************************************************
         private string RandomString(int size)
@@ -173,10 +180,15 @@ namespace Visualisator
             else if (Pt == typeof(KeepAlive))
             {
                 KeepAlive _wp   = (KeepAlive)pack;
+                _KeepAliveReceived++;
             }
             else if (Pt == typeof(Data))
             {
                 Data _wp        = (Data)pack;
+                _wp.Destination = _wp.Reciver;
+                _wp.X = this.x;
+                _wp.Y = this.y;
+                SendData(_wp);
                 
             }
             else if (Pt == typeof(DataAck))

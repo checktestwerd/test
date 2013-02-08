@@ -30,6 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblSent = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtDataReceeived = new System.Windows.Forms.Label();
+            this.txtMAC = new System.Windows.Forms.TextBox();
+            this.txtDestination = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.lblAssociatedAP = new System.Windows.Forms.Label();
             this.ConnectedToLabel = new System.Windows.Forms.Label();
             this.lblCoordinates = new System.Windows.Forms.Label();
@@ -42,12 +49,21 @@
             this.btnDumpAll = new System.Windows.Forms.Button();
             this.txtDumpAll = new System.Windows.Forms.TextBox();
             this.tmrGUI = new System.Windows.Forms.Timer(this.components);
+            this.cmdReset = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cmdReset);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.lblSent);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.txtDataReceeived);
+            this.groupBox1.Controls.Add(this.txtMAC);
+            this.groupBox1.Controls.Add(this.txtDestination);
+            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.lblAssociatedAP);
             this.groupBox1.Controls.Add(this.ConnectedToLabel);
             this.groupBox1.Controls.Add(this.lblCoordinates);
@@ -63,6 +79,66 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cennect Info";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(232, 69);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Sent";
+            // 
+            // lblSent
+            // 
+            this.lblSent.AutoSize = true;
+            this.lblSent.Location = new System.Drawing.Point(291, 69);
+            this.lblSent.Name = "lblSent";
+            this.lblSent.Size = new System.Drawing.Size(35, 13);
+            this.lblSent.TabIndex = 14;
+            this.lblSent.Text = "label2";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(232, 82);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "Received";
+            // 
+            // txtDataReceeived
+            // 
+            this.txtDataReceeived.AutoSize = true;
+            this.txtDataReceeived.Location = new System.Drawing.Point(291, 82);
+            this.txtDataReceeived.Name = "txtDataReceeived";
+            this.txtDataReceeived.Size = new System.Drawing.Size(35, 13);
+            this.txtDataReceeived.TabIndex = 12;
+            this.txtDataReceeived.Text = "label2";
+            // 
+            // txtMAC
+            // 
+            this.txtMAC.Location = new System.Drawing.Point(18, 82);
+            this.txtMAC.Name = "txtMAC";
+            this.txtMAC.Size = new System.Drawing.Size(183, 20);
+            this.txtMAC.TabIndex = 11;
+            // 
+            // txtDestination
+            // 
+            this.txtDestination.Location = new System.Drawing.Point(247, 104);
+            this.txtDestination.Name = "txtDestination";
+            this.txtDestination.Size = new System.Drawing.Size(189, 20);
+            this.txtDestination.TabIndex = 10;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(451, 104);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(93, 30);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "Send Data";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // lblAssociatedAP
             // 
@@ -181,6 +257,16 @@
             this.tmrGUI.Interval = 20;
             this.tmrGUI.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // cmdReset
+            // 
+            this.cmdReset.Location = new System.Drawing.Point(332, 73);
+            this.cmdReset.Name = "cmdReset";
+            this.cmdReset.Size = new System.Drawing.Size(53, 22);
+            this.cmdReset.TabIndex = 16;
+            this.cmdReset.Text = "Reset";
+            this.cmdReset.UseVisualStyleBackColor = true;
+            this.cmdReset.Click += new System.EventHandler(this.cmdReset_Click);
+            // 
             // StationInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -214,5 +300,13 @@
         private System.Windows.Forms.TextBox txtDumpAll;
         private System.Windows.Forms.Label ConnectedToLabel;
         private System.Windows.Forms.Label lblAssociatedAP;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox txtDestination;
+        private System.Windows.Forms.Label txtDataReceeived;
+        private System.Windows.Forms.TextBox txtMAC;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblSent;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button cmdReset;
     }
 }
