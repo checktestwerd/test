@@ -6,12 +6,15 @@ using System.Drawing;
 using System.Threading;
 using System.Collections;
 using Visualisator.Packets;
+using System.Windows.Forms;
 
 namespace Visualisator
 {
     [Serializable()]
     class STA : RFDevice, IBoardObjects, ISerializable,IRFDevice
     {
+
+        private Boolean _scanning = false;
 
        /* public STA(Medium med)
         {
@@ -211,6 +214,19 @@ namespace Visualisator
                     Thread.Sleep(ran.Next(1, 3));
                 RF_STATUS = "TX";
             }
+
+            // Now scanning process running
+            if (_scanning)
+            {
+                SpinWait.SpinUntil
+                (() =>
+                    {
+
+                        return (bool)!_scanning;
+                    }
+                );
+            }
+
             _MEDIUM.SendData(PacketToSend);
             
             RF_STATUS = "NONE";
@@ -287,6 +303,32 @@ namespace Visualisator
 
         }
 
+        private void ScanOneChannel(int chann, int TimeForListen, String Band)
+        {
+            Int32 perv_channel = this.getOperateChannel();
+            String prev_band = this.getOperateBand();
+
+            setOperateBand(Band);
+            _scanning = true;
+            setOperateChannel(chann);
+            Thread.Sleep(TimeForListen);
+            if (this.getOperateChannel() != chann)
+            {
+                //  Scan on this channel was desturbed
+                //  Try again
+                _scanning = false;
+                ScanOneChannel(chann, TimeForListen, Band);
+            }
+            else
+            {
+                //  Scan on this channel success
+                //  Return back work parameters
+                setOperateChannel(perv_channel);
+                setOperateBand(prev_band);
+                _scanning = false;
+            }
+
+        }
         public void ThreadableScan()
         {
             _AccessPoint.Clear();
@@ -295,16 +337,14 @@ namespace Visualisator
             Int32 perv_channel = this.getOperateChannel();
             String prev_band = this.getOperateBand();
 
-            setOperateBand("N");
+            
             for (int i = 1; i < 15; i++)
             {
-                setOperateChannel(i);
-                Thread.Sleep(100);
+                ScanOneChannel(i, 100, "N");
             }
             for (int i = 1; i < 15; i++)
             {
-                setOperateChannel(i);
-                Thread.Sleep(400);
+                ScanOneChannel(i, 400, "N");
             }
             /*
             ArrayList Achannels = _MEDIUM.getBandAChannels();
@@ -314,8 +354,7 @@ namespace Visualisator
                 setOperateChannel(i);
                 Thread.Sleep(400);
             }*/
-            setOperateChannel(perv_channel);
-            setOperateBand(prev_band);
+
         }
 
         //*********************************************************************
