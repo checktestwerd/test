@@ -6,13 +6,14 @@ using System.Drawing;
 using System.Threading;
 using Visualisator.Packets;
 using System.Collections;
+using System.Windows.Forms;
 
 namespace Visualisator
 {
     [Serializable()]
     class AP :  RFDevice, IBoardObjects,IRFDevice,ISerializable
     {
- 
+        const int _UPDATE_KEEP_ALIVE_PERIOD = 5; //sec
         
         private Int32 _BeaconPeriod = 500;
 
@@ -20,8 +21,7 @@ namespace Visualisator
         private Int32 _AP_MIN_SEND_PERIOD = 100;
         private static Random rnadomBeacon = new Random();
         private String _SSID = "";
-        private ArrayList _AssociatedDevices = new ArrayList();
-
+        private ArrayListCounted _AssociatedDevices = new ArrayListCounted();
         private Int32 _KeepAliveReceived = 0;
 
 
@@ -83,7 +83,21 @@ namespace Visualisator
           Thread newThreadListen = new Thread(new ThreadStart(Listen));
           newThreadListen.Start();
 
+          Thread newThreadKeepAliveDecrease = new Thread(new ThreadStart(UpdateKeepAlive));
+          newThreadKeepAliveDecrease.Start();
         }
+
+        private void UpdateKeepAlive()
+        {
+            while (_Enabled)
+            {
+                _AssociatedDevices.DecreaseAll();
+              
+                Thread.Sleep(_UPDATE_KEEP_ALIVE_PERIOD * 1000); // sec *
+            }
+
+        }
+
         //*********************************************************************
         public void Disable()
         {
@@ -165,6 +179,18 @@ namespace Visualisator
                 Thread.Sleep(2);
             }
         }
+
+        private void UpdateSTAKeepAliveInfoOnReceive(String STA_MAC)
+        {
+            if (_AssociatedDevices.Contains(STA_MAC))
+            {
+                _AssociatedDevices.Increase(STA_MAC);
+            }
+            else
+            {
+                MessageBox.Show(STA_MAC + " not associated UpdateSTAKeepAliveInfo");
+            }
+        }
         //*********************************************************************
         public void ParseReceivedPacket(IPacket pack)
         {
@@ -181,6 +207,9 @@ namespace Visualisator
             {
                 KeepAlive _wp   = (KeepAlive)pack;
                 _KeepAliveReceived++;
+
+                Thread newThread = new Thread(() => UpdateSTAKeepAliveInfoOnReceive(_wp.Source));
+                newThread.Start();
             }
             else if (Pt == typeof(Data))
             {
